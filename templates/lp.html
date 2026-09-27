@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clube Flash — Calculadora de Economia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fustat:wght@400;600;700;800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+  .lp-hero{
+    padding:60px 0 40px;
+    border-bottom:1px solid var(--line);
+  }
+  .lp-hero h1{
+    font-family:"Fustat", sans-serif;
+    font-weight:800;
+    font-size:clamp(28px, 4vw, 42px);
+    line-height:1.15;
+    letter-spacing:-0.01em;
+    margin:0 0 16px;
+    max-width:680px;
+  }
+  .lp-hero h1 span{ color:var(--rosa); }
+  .lp-hero p{
+    font-size:16px;
+    color:var(--ink-soft);
+    max-width:560px;
+    margin:0 0 28px;
+  }
+  .lp-cta-row{ display:flex; gap:12px; flex-wrap:wrap; }
+  .lp-btn-primary{
+    background:var(--rosa);
+    color:#fff;
+    border:none;
+    font-family:"Nunito Sans", sans-serif;
+    font-weight:700;
+    font-size:14.5px;
+    padding:13px 22px;
+    border-radius:10px;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-block;
+  }
+  .lp-btn-secondary{
+    background:transparent;
+    color:var(--rosa-dark2);
+    border:1px solid var(--rosa-light2);
+    font-family:"Nunito Sans", sans-serif;
+    font-weight:700;
+    font-size:14.5px;
+    padding:13px 22px;
+    border-radius:10px;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-block;
+  }
+  @media (prefers-color-scheme: dark){ .lp-btn-secondary{ color: var(--rosa-light2); } }
+
+  .lp-personas{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:20px;
+    padding:36px 0;
+    border-bottom:1px solid var(--line);
+  }
+  @media (max-width:760px){ .lp-personas{ grid-template-columns:1fr; } }
+  .persona-card h3{
+    font-family:"Fustat", sans-serif;
+    font-size:15px;
+    margin:0 0 6px;
+  }
+  .persona-card p{ font-size:13.5px; color:var(--ink-soft); margin:0; }
+
+  .lp-form-section{ padding:40px 0; }
+  .lp-form-section h2{
+    font-family:"Fustat", sans-serif;
+    font-size:22px;
+    margin:0 0 8px;
+  }
+  .lp-form-section > p{ color:var(--ink-soft); margin:0 0 24px; max-width:520px; }
+
+  .lp-form{
+    max-width:480px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .lp-form label{
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--ink-soft);
+    margin-bottom:4px;
+    display:block;
+  }
+  .lp-form input{
+    width:100%;
+    padding:11px 13px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:var(--input-bg);
+    color:var(--ink);
+    font-family:"Nunito Sans", sans-serif;
+    font-size:14px;
+  }
+  .lp-form input:focus{ outline:2px solid var(--rosa); outline-offset:1px; }
+  .lp-form button{
+    margin-top:6px;
+    background:var(--rosa);
+    color:#fff;
+    border:none;
+    font-family:"Nunito Sans", sans-serif;
+    font-weight:700;
+    font-size:14.5px;
+    padding:13px 22px;
+    border-radius:10px;
+    cursor:pointer;
+  }
+  .lp-form button:disabled{ opacity:0.6; cursor:wait; }
+  .lp-form-msg{ font-size:13.5px; margin-top:4px; min-height:18px; }
+  .lp-form-msg.ok{ color:#1a8a4a; }
+  .lp-form-msg.err{ color:var(--rosa-dark2); }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <div class="wordmark">Clube <span>Flash</span></div>
+    <div class="kicker">Calculadora de economia com parceiros B2C</div>
+  </div>
+
+  <div class="lp-hero">
+    <h1>Quanto o Clube Flash <span>devolve de verdade</span> para os seus colaboradores?</h1>
+    <p>Transforme o sortimento de parceiros do Clube Flash em um número concreto de economia — pronto para justificar o benefício com o RH e para argumentar sem depender de rebate.</p>
+    <div class="lp-cta-row">
+      <a class="lp-btn-primary" href="/">Simular agora</a>
+      <a class="lp-btn-secondary" href="/agente">Falar com o assistente</a>
+    </div>
+  </div>
+
+  <div class="lp-personas">
+    <div class="persona-card">
+      <h3>Time comercial da Flash</h3>
+      <p>Argumento numérico pronto para negociações, sem depender de rebate proibido por lei no PAT.</p>
+    </div>
+    <div class="persona-card">
+      <h3>RH das empresas clientes</h3>
+      <p>Um número claro para engajar os colaboradores e justificar o benefício internamente.</p>
+    </div>
+    <div class="persona-card">
+      <h3>Colaboradores</h3>
+      <p>Entenda quanto o Clube Flash já devolve — e como usar mais dele no dia a dia.</p>
+    </div>
+  </div>
+
+  <div class="lp-form-section">
+    <h2>Quer uma simulação personalizada?</h2>
+    <p>Deixe seus dados que a gente te manda a economia estimada da sua empresa.</p>
+    <form class="lp-form" id="leadForm">
+      <div>
+        <label for="nome">Nome completo</label>
+        <input type="text" id="nome" required>
+      </div>
+      <div>
+        <label for="email">E-mail corporativo</label>
+        <input type="email" id="email" required>
+      </div>
+      <div>
+        <label for="empresa">Empresa</label>
+        <input type="text" id="empresa" required>
+      </div>
+      <div>
+        <label for="cargo">Cargo</label>
+        <input type="text" id="cargo">
+      </div>
+      <div>
+        <label for="headcount">Número de colaboradores (opcional)</label>
+        <input type="number" id="headcount" min="1">
+      </div>
+      <button type="submit" id="leadSubmitBtn">Quero minha simulação</button>
+      <p class="lp-form-msg" id="leadMsg"></p>
+    </form>
+  </div>
+
+  <footer class="credits">Ambiente de trabalho paralelo — hospedado no Render enquanto o acesso de edição da LP principal é resolvido.</footer>
+</div>
+
+<script src="{{ url_for('static', filename='lp.js') }}"></script>
+</body>
+</html>

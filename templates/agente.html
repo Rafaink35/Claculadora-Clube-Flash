@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mingo — Clube Flash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fustat:wght@400;600;700;800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+  .chat-shell{
+    max-width:720px;
+    margin:0 auto;
+    padding:28px 20px 40px;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  .chat-messages{
+    flex:1;
+    overflow-y:auto;
+    padding:8px 2px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .msg{
+    max-width:82%;
+    padding:11px 15px;
+    border-radius:14px;
+    font-size:14.5px;
+    line-height:1.5;
+    white-space:pre-wrap;
+  }
+  .msg.user{
+    align-self:flex-end;
+    background:var(--rosa);
+    color:#fff;
+    border-bottom-right-radius:4px;
+  }
+  .msg.assistant{
+    align-self:flex-start;
+    background:var(--paper-tint);
+    border:1px solid var(--line);
+    color:var(--ink);
+    border-bottom-left-radius:4px;
+  }
+  .msg.thinking{
+    align-self:flex-start;
+    background:var(--paper-tint);
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+  .chat-input-row{
+    display:flex;
+    gap:10px;
+    border-top:1px solid var(--line);
+    padding-top:14px;
+  }
+  .chat-input-row input{
+    flex:1;
+    padding:12px 14px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:var(--input-bg);
+    color:var(--ink);
+    font-family:"Nunito Sans", sans-serif;
+    font-size:14.5px;
+  }
+  .chat-input-row input:focus{ outline:2px solid var(--rosa); outline-offset:1px; }
+  .chat-input-row button{
+    border:none;
+    background:var(--rosa);
+    color:#fff;
+    font-family:"Nunito Sans", sans-serif;
+    font-weight:700;
+    font-size:14px;
+    padding:0 20px;
+    border-radius:10px;
+    cursor:pointer;
+  }
+  .chat-input-row button:disabled{ opacity:0.6; cursor:wait; }
+  .chat-suggestions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .suggestion-chip{
+    border:1px solid var(--rosa-light2);
+    background:transparent;
+    color:var(--rosa-dark2);
+    font-family:"Nunito Sans", sans-serif;
+    font-size:12.5px;
+    padding:7px 12px;
+    border-radius:999px;
+    cursor:pointer;
+  }
+  @media (prefers-color-scheme: dark){ .suggestion-chip{ color: var(--rosa-light2); } }
+</style>
+</head>
+<body>
+<div class="chat-shell">
+  <div class="topbar">
+    <div class="wordmark">Clube <span>Flash</span></div>
+    <div class="kicker">🦩 Mingo · defensor do Clube Flash</div>
+  </div>
+
+  <div class="chat-suggestions" id="suggestions">
+    <button class="suggestion-chip" data-msg="Quanto uma empresa com 500 colaboradores economizaria em 12 meses?">Simular 500 colaboradores</button>
+    <button class="suggestion-chip" data-msg="Por que a Flash não oferece rebate como outros concorrentes?">Objeção do rebate</button>
+    <button class="suggestion-chip" data-msg="Como o Clube Flash se compara ao Clube iFood?">Comparar com iFood</button>
+  </div>
+
+  <div class="chat-messages" id="chatMessages"></div>
+
+  <form class="chat-input-row" id="chatForm">
+    <input type="text" id="chatInput" placeholder="Pergunte algo ou dê o número de colaboradores..." autocomplete="off">
+    <button type="submit" id="sendBtn">Enviar</button>
+  </form>
+</div>
+
+<script src="{{ url_for('static', filename='agente.js') }}"></script>
+</body>
+</html>

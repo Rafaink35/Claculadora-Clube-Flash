@@ -1,0 +1,94 @@
+[
+  {
+    "id": "conveniencia",
+    "nome": "Conveniência",
+    "parceiros": 80,
+    "desconto": 18.0,
+    "n_amostra_desconto": 28,
+    "freq": 1.53,
+    "ticket": 108.47,
+    "fonte_uso": "real (mai-set/2026)"
+  },
+  {
+    "id": "refeicao",
+    "nome": "Refeição",
+    "parceiros": 29,
+    "desconto": 16.5,
+    "n_amostra_desconto": 8,
+    "freq": 1.62,
+    "ticket": 36.13,
+    "fonte_uso": "real (mai-set/2026)"
+  },
+  {
+    "id": "bem_estar",
+    "nome": "Bem-estar",
+    "parceiros": 21,
+    "desconto": 13.3,
+    "n_amostra_desconto": 12,
+    "freq": 1.23,
+    "ticket": 148.75,
+    "fonte_uso": "real (mai-set/2026)"
+  },
+  {
+    "id": "mobilidade",
+    "nome": "Mobilidade",
+    "parceiros": 19,
+    "desconto": 0.0,
+    "n_amostra_desconto": 5,
+    "freq": 2.63,
+    "ticket": 58.76,
+    "desconto_medio_simples_nao_ponderado": 41.0,
+    "nota_correcao": "Corrigido em 27/09/2026: dentro da própria categoria Mobilidade, 100% do TPV real dos últimos 5 meses (Databricks) vem de Bilhete Único SPTrans (74,6%), Uber (22,2%) e Uber Cards (3,2%) — nenhum com desconto percentual documentado no Mapa de Parceiros (são recarga de transporte e crédito de app, não compra com desconto). A média simples entre parceiros não reflete a economia real gerada pela categoria; o desconto real ponderado por volume é ~0%.",
+    "fonte_uso": "real (mai-set/2026)"
+  },
+  {
+    "id": "educacao",
+    "nome": "Educação",
+    "parceiros": 14,
+    "desconto": 37.5,
+    "n_amostra_desconto": 8,
+    "freq": 0.3,
+    "ticket": 280,
+    "fonte_uso": "estimativa (sem transação real desde 2023)"
+  },
+  {
+    "id": "saude",
+    "nome": "Saúde",
+    "parceiros": 8,
+    "desconto": 16.7,
+    "n_amostra_desconto": 3,
+    "freq": 1.29,
+    "ticket": 87.93,
+    "fonte_uso": "real (mai-set/2026)"
+  },
+  {
+    "id": "cultura",
+    "nome": "Cultura",
+    "parceiros": 8,
+    "desconto": 39.0,
+    "n_amostra_desconto": 3,
+    "freq": 1.39,
+    "ticket": 35.63,
+    "fonte_uso": "real (mai-set/2026)"
+  },
+  {
+    "id": "alimentacao",
+    "nome": "Alimentação",
+    "parceiros": 7,
+    "desconto": 21.0,
+    "n_amostra_desconto": 1,
+    "freq": 1.71,
+    "ticket": 148.05,
+    "fonte_uso": "real (mai-set/2026)"
+  },
+  {
+    "id": "pets",
+    "nome": "Pets",
+    "parceiros": 7,
+    "desconto": 17.1,
+    "n_amostra_desconto": 7,
+    "freq": 1.27,
+    "ticket": 122.43,
+    "fonte_uso": "real (mai-set/2026)"
+  }
+]

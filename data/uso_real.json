@@ -1,0 +1,50 @@
+{
+  "Conveniência": {
+    "flash_category": "convenience",
+    "freq_media_mes": 1.53,
+    "ticket_medio": 108.47,
+    "fonte": "real_mai_set_2026"
+  },
+  "Cultura": {
+    "flash_category": "culture",
+    "freq_media_mes": 1.39,
+    "ticket_medio": 35.63,
+    "fonte": "real_mai_set_2026"
+  },
+  "Alimentação": {
+    "flash_category": "grocery",
+    "freq_media_mes": 1.71,
+    "ticket_medio": 148.05,
+    "fonte": "real_mai_set_2026"
+  },
+  "Saúde": {
+    "flash_category": "health",
+    "freq_media_mes": 1.29,
+    "ticket_medio": 87.93,
+    "fonte": "real_mai_set_2026"
+  },
+  "Refeição": {
+    "flash_category": "meal",
+    "freq_media_mes": 1.62,
+    "ticket_medio": 36.13,
+    "fonte": "real_mai_set_2026"
+  },
+  "Mobilidade": {
+    "flash_category": "mobility",
+    "freq_media_mes": 2.63,
+    "ticket_medio": 58.76,
+    "fonte": "real_mai_set_2026"
+  },
+  "Pets": {
+    "flash_category": "pet_shop",
+    "freq_media_mes": 1.27,
+    "ticket_medio": 122.43,
+    "fonte": "real_mai_set_2026"
+  },
+  "Bem-estar": {
+    "flash_category": "wellbeing",
+    "freq_media_mes": 1.23,
+    "ticket_medio": 148.75,
+    "fonte": "real_mai_set_2026"
+  }
+}

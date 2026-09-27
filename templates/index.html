@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de economia — Clube Flash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fustat:wght@400;600;700;800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="shell">
+
+  <div class="topbar">
+    <div class="wordmark">Clube <span>Flash</span></div>
+    <div class="kicker">Tema 03/07 · Calculadora de economia com parceiros B2C</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-top">
+      <div>
+        <p class="hero-label" id="heroLabel">Economia agregada devolvida à empresa em 12 meses</p>
+        <p class="hero-number" id="heroNumber">R$ 0,00</p>
+      </div>
+      <div class="period-pills" id="periodPills">
+        <button class="pill" data-months="1">1 mês</button>
+        <button class="pill" data-months="3">3 meses</button>
+        <button class="pill" data-months="6">6 meses</button>
+        <button class="pill active" data-months="12">12 meses</button>
+      </div>
+    </div>
+    <p class="hero-sub" id="heroSub">Isso equivale a <strong>R$ 0,00</strong> por colaborador no período, considerando o padrão de uso projetado abaixo.</p>
+    <p class="hero-impact" id="heroImpact"></p>
+  </div>
+
+  <div class="grid">
+    <div>
+      <h2 class="panel-title">Parâmetros</h2>
+      <p class="panel-note">Ajuste headcount e padrão de uso por categoria. O desconto médio já vem do Mapa de Parceiros B2C — frequência e ticket são estimativas iniciais, prontas para receber dado real de uso.</p>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="companyName">Empresa (opcional)</label>
+          <input type="text" id="companyName" placeholder="sua empresa">
+        </div>
+        <div class="field">
+          <label for="headcount">Colaboradores ativos no Clube Flash</label>
+          <input type="number" id="headcount" value="500" min="1">
+        </div>
+        <div class="field">
+          <label for="salario">Salário médio mensal do colaborador (R$)</label>
+          <input type="number" id="salario" value="3000" min="1" step="50">
+        </div>
+      </div>
+
+      <table class="cat-table">
+        <thead>
+          <tr>
+            <th>Categoria</th>
+            <th>Desconto médio</th>
+            <th>Usos / mês</th>
+            <th>Ticket médio</th>
+            <th>Economia / mês</th>
+          </tr>
+        </thead>
+        <tbody id="catTableBody">
+          <tr><td colspan="5" class="loading-note">Carregando categorias...</td></tr>
+        </tbody>
+      </table>
+
+      <p class="source-note">Desconto médio calculado a partir das condições comerciais dos parceiros ativos do Mapa de Parceiros B2C. Frequência de uso e ticket médio agora vêm do uso real registrado no Databricks (mai-set/2026), exceto Educação — sem transação real registrada desde 2023, mantida como estimativa.</p>
+    </div>
+
+    <div>
+      <div class="bars-panel">
+        <h2 class="panel-title">Economia por categoria</h2>
+        <p class="panel-note">Participação de cada categoria na economia mensal por colaborador.</p>
+        <div id="barsContainer"></div>
+      </div>
+
+      <div>
+        <h2 class="panel-title">Narrativa para o RH</h2>
+        <p class="panel-note">Pronta para colar em relatório de renovação ou apresentação de valor.</p>
+        <div class="narrative-card">
+          <p class="narrative-text" id="narrativeText"></p>
+          <p class="narrative-fonte" id="narrativeFonte"></p>
+          <div class="narrative-actions">
+            <button class="copy-btn" id="copyBtn">Copiar narrativa</button>
+            <button class="ai-btn" id="aiBtn">✨ Gerar com IA</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="roadmap">
+    <h3 class="roadmap-title">Como isso escala</h3>
+    <p class="roadmap-sub">Esta é a versão MVP da calculadora — a lógica de cálculo já está pronta, faltando conectar a fonte de uso real.</p>
+    <div class="roadmap-steps">
+      <div class="step">
+        <span class="num">01</span>
+        <h4>Hoje</h4>
+        <p>Frequência e ticket médio são estimativas editáveis por categoria, servidas por /api/categorias a partir de data/categorias.json.</p>
+      </div>
+      <div class="step">
+        <span class="num">02</span>
+        <h4>Próximo passo</h4>
+        <p>Trocar <code>carregar_categorias()</code> em app.py por uma query real de uso por colaborador no Databricks/Metabase.</p>
+      </div>
+      <div class="step">
+        <span class="num">03</span>
+        <h4>Escala</h4>
+        <p>Rodar a calculadora por empresa/base automaticamente, gerando a narrativa de valor devolvido pronta para cada relatório de RH.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="credits">Artefato de referência — Tema 03/07, Calculadora de economia com parceiros B2C (Clube Flash).</footer>
+</div>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

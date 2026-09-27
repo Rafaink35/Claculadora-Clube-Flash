@@ -1,0 +1,774 @@
+[
+  {
+    "nome": "99 Food",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Abbraccio",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Achadinhos da Flash",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Afya Medicina",
+    "categoria": "Educação"
+  },
+  {
+    "nome": "Afya Saúde, Humanas e Exatas",
+    "categoria": "Educação"
+  },
+  {
+    "nome": "Airalo",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Airbnb",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Allugator - Iphones",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Allugator - Notebooks",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Alura",
+    "categoria": "Educação"
+  },
+  {
+    "nome": "Americanas",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Americanas Promo",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Amobeleza",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Anacapri",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Antecipe seu FGTS (Juca)",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Appgas",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Applebee's",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Approve",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Asics",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Assaí",
+    "categoria": "Alimentação"
+  },
+  {
+    "nome": "Avon",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Bacio Di Latte",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Beep Saúde",
+    "categoria": "Saúde"
+  },
+  {
+    "nome": "Beleza Na Web",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Bilhete Único - SPTrans",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Brasil Cacau",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Bráz Pizzaria",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Buddha Spa",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Budz",
+    "categoria": "Pets"
+  },
+  {
+    "nome": "Buser - 1ª compra",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Buser - Recorrente",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "C&A",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Cacau Show",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Carpediem Spa",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Carrefour",
+    "categoria": "Alimentação"
+  },
+  {
+    "nome": "Carrefour Promo",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Carter's",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Casas Bahia",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Casas Bahia Promo",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Centauro",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Centauro Promo",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Cesta Básica",
+    "categoria": "Alimentação"
+  },
+  {
+    "nome": "Cestas Michelli",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "China In Box",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Cinemark",
+    "categoria": "Cultura"
+  },
+  {
+    "nome": "Claro",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Clickbus - 1ª compra",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Clickbus - Recorrente",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Clubinho de Ofertas",
+    "categoria": "Cultura"
+  },
+  {
+    "nome": "Clude Saúde",
+    "categoria": "Saúde"
+  },
+  {
+    "nome": "Cobasi",
+    "categoria": "Pets"
+  },
+  {
+    "nome": "Coco Bambu",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "ConectCar",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Conquer Plus",
+    "categoria": "Educação"
+  },
+  {
+    "nome": "Conquer Pós-graduação",
+    "categoria": "Educação"
+  },
+  {
+    "nome": "Consul",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Crédito do Trabalhador (Consignado Paketá)",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Cubos Academy",
+    "categoria": "Educação"
+  },
+  {
+    "nome": "Dafiti",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Daki - 1° Compra",
+    "categoria": "Alimentação"
+  },
+  {
+    "nome": "Daki - Recorrente",
+    "categoria": "Alimentação"
+  },
+  {
+    "nome": "Darkness",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Decathlon",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Decathlon Promo",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Decolar",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Descomplica",
+    "categoria": "Educação"
+  },
+  {
+    "nome": "Descomplica Pós-Graduação",
+    "categoria": "Educação"
+  },
+  {
+    "nome": "Descontos em cinemas",
+    "categoria": "Cultura"
+  },
+  {
+    "nome": "Domino's Pizza",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Dr. AuAu | Primeiro uso",
+    "categoria": "Pets"
+  },
+  {
+    "nome": "Dr. AuAu | Recorrente",
+    "categoria": "Pets"
+  },
+  {
+    "nome": "Dr. Peanut",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Drogaria Araújo",
+    "categoria": "Saúde"
+  },
+  {
+    "nome": "Ecoparada Madero",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Emma Colchões",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Empréstimo Pessoal NoVerde",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Empréstimo Pessoal SuperSim",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Empréstimo Salarial (Blipay)",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Evino",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Extra",
+    "categoria": "Alimentação"
+  },
+  {
+    "nome": "Fever",
+    "categoria": "Cultura"
+  },
+  {
+    "nome": "Fila",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Flash + Cacau Show",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Giuliana Flores",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Gocase",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Granado",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Havaianas",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Hering",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Hertz | Dollar | Thrifty",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Hoteis.com",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Imaginarium",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Insider - 1ª compra",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Insider Recorrente",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Integralmedica",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Jardim Botânico de São Paulo",
+    "categoria": "Cultura"
+  },
+  {
+    "nome": "Jequiti",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Jeronimo by Madero",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Keeta",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Klubi Auto",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Klubi Celular",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Klubi Moto",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Kopenhagen",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "La Guapa",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Labi Exames",
+    "categoria": "Saúde"
+  },
+  {
+    "nome": "Life By Vivara",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Localiza Assinatura",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Luckau",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Madero",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Mais Mu",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Marmitaria New Fit - 1ª compra",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Marmitaria New Fit - Recorrente",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Mascavo",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Mash",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "McDonald's",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Mizuno",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Morana",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Movida",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Multilaser",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Natura",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Netshoes",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Netshoes Promo",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Nike",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Nintendo",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Nomad",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Nutrify",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "OBoticário",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "OBoticário Promo",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Océane",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Olenna Beauty",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Olympikus",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Open English",
+    "categoria": "Educação"
+  },
+  {
+    "nome": "Óticas Diniz",
+    "categoria": "Saúde"
+  },
+  {
+    "nome": "Outback",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Pague Menos Cards",
+    "categoria": "Saúde"
+  },
+  {
+    "nome": "Petlove",
+    "categoria": "Pets"
+  },
+  {
+    "nome": "Petz",
+    "categoria": "Pets"
+  },
+  {
+    "nome": "Petz Promo",
+    "categoria": "Pets"
+  },
+  {
+    "nome": "Pobre Juan",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Pontofrio",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Pontofrio Promo",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Positivo",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Primeira",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Pronto Light - 1ª compra",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Pronto Light - Recorrente",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Puket",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Rappi",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Razer Gold",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Renner",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Renner Promo",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Ri Happy",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Riachuelo",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Riachuelo Promo",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Ritua",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Salon Line",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Sam's Club",
+    "categoria": "Alimentação"
+  },
+  {
+    "nome": "Sanavita",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Seguro Auto (Porto)",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Seguro Celular (Porto)",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Seguro Residencial (Porto)",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Seguro Viagem (Porto)",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Sem Parar Promo",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Sephora",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Shoppe",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Sony PlayStation",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Spicy",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Stanley",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Sul América Odonto",
+    "categoria": "Saúde"
+  },
+  {
+    "nome": "The North Face",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Thermas da Mata",
+    "categoria": "Cultura"
+  },
+  {
+    "nome": "Thermas da Mata | Hotel",
+    "categoria": "Cultura"
+  },
+  {
+    "nome": "TIM",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Tok&Stok",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "TotalPass Lite",
+    "categoria": "Bem-estar"
+  },
+  {
+    "nome": "Turbi | Assinatura",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Turbi | Locações",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Uber",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Uber Cards",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Umbro",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Under Armour",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Unidas",
+    "categoria": "Mobilidade"
+  },
+  {
+    "nome": "Universidade Cruzeiro do Sul",
+    "categoria": "Educação"
+  },
+  {
+    "nome": "Unmaze",
+    "categoria": "Educação"
+  },
+  {
+    "nome": "USP ECA",
+    "categoria": "Educação"
+  },
+  {
+    "nome": "VAIO",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Velotax",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Vivara",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Vivo",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "W.dental",
+    "categoria": "Saúde"
+  },
+  {
+    "nome": "Wizard - Online",
+    "categoria": "Educação"
+  },
+  {
+    "nome": "Wizard - Presencial",
+    "categoria": "Educação"
+  },
+  {
+    "nome": "Zapay",
+    "categoria": "Conveniência"
+  },
+  {
+    "nome": "Zé Delivery Cards",
+    "categoria": "Refeição"
+  },
+  {
+    "nome": "Zoo SP",
+    "categoria": "Cultura"
+  }
+]

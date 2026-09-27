@@ -25,6 +25,7 @@ from flask import Flask, jsonify, render_template, request
 app = Flask(__name__)
 
 DATA_PATH = Path(__file__).parent / "data" / "categorias.json"
+PARCEIROS_PATH = Path(__file__).parent / "data" / "parceiros.json"
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
@@ -114,6 +115,33 @@ def chamar_gemini(d: dict) -> str:
     return texto.strip()
 
 
+def carregar_parceiros():
+    with open(PARCEIROS_PATH, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def listar_parceiros(categoria: str, limite: int = 8) -> dict:
+    """Busca parceiros reais por categoria — o Mingo chama isto em vez de
+    inventar nome de parceiro ou recusar responder."""
+    todos = carregar_parceiros()
+    categoria_norm = categoria.strip().lower()
+    encontrados = [p for p in todos if p["categoria"].strip().lower() == categoria_norm]
+
+    if not encontrados:
+        categorias_disponiveis = sorted(set(p["categoria"] for p in todos))
+        return {
+            "erro": f"categoria '{categoria}' não encontrada",
+            "categorias_disponiveis": categorias_disponiveis,
+        }
+
+    return {
+        "categoria": categoria,
+        "total_parceiros_na_categoria": len(encontrados),
+        "parceiros": [p["nome"] for p in encontrados[:limite]],
+        "mostrando": min(limite, len(encontrados)),
+    }
+
+
 def calcular_economia(headcount: int, meses: int = 12) -> dict:
     """Função real de cálculo — a mesma fórmula usada na calculadora principal.
     É isto que o agente chama via function calling, em vez de inventar números."""
@@ -167,11 +195,36 @@ FUNCTION_DECLARATIONS = [{
         },
         "required": ["headcount"],
     },
+}, {
+    "name": "listar_parceiros",
+    "description": (
+        "Busca os nomes reais de parceiros ativos do Clube Flash numa categoria "
+        "específica (Conveniência, Refeição, Bem-estar, Mobilidade, Educação, "
+        "Saúde, Cultura, Alimentação ou Pets). Chame esta função SEMPRE que o "
+        "usuário pedir nomes de parceiros, exemplos concretos, ou perguntar "
+        "'quais parceiros' — nunca invente nome de parceiro nem diga apenas "
+        "que 'tem muitos parceiros bacanas' sem checar."
+    ),
+    "parameters": {
+        "type": "OBJECT",
+        "properties": {
+            "categoria": {
+                "type": "STRING",
+                "description": "Nome exato da categoria, como aparece na lista de categorias do sistema.",
+            },
+            "limite": {
+                "type": "INTEGER",
+                "description": "Quantos nomes retornar, no máximo. Use 8 se o usuário não especificar.",
+            },
+        },
+        "required": ["categoria"],
+    },
 }]
 
 
 def montar_system_prompt() -> str:
     categorias = carregar_categorias()
+    total_parceiros = sum(c["parceiros"] for c in categorias)
     linhas_categorias = "\n".join(
         f"- {c['nome']}: desconto médio {c['desconto']}% ({c['parceiros']} parceiros ativos, "
         f"{c.get('fonte_uso', 'estimativa')})"
@@ -195,7 +248,13 @@ COMO VOCÊ CONVERSA:
 - Fale como alguém defendendo algo que acredita, não como um catálogo de FAQ. Entusiasmo real, sem exagero de propaganda vazia.
 - Reaja ao que a pessoa disse antes de argumentar de volta.
 - Frases curtas, linguagem natural, contrações do dia a dia ("tá", "pra", "dá pra").
-- Nunca invente número — sempre que surgir quantidade de colaboradores e pedido de estimativa, chame a função calcular_economia.
+- NUNCA use markdown — sem **negrito**, sem listas com hífen ou asterisco, sem títulos. Apenas texto corrido, porque a tela do chat não interpreta formatação e os símbolos apareceriam literalmente.
+- Use vírgula para casas decimais, nunca ponto (ex: "39,0%", não "39.0%") — você está falando português do Brasil.
+
+DADOS REAIS QUE VOCÊ DEVE CONSULTAR, NUNCA INVENTAR:
+- Total de parceiros ativos no Clube Flash: {total_parceiros} (use exatamente este número — não some as categorias de cabeça, você erra).
+- Sempre que alguém der ou perguntar sobre um número de colaboradores e quiser saber a economia gerada, chame a função calcular_economia.
+- Sempre que alguém pedir nomes de parceiros, exemplos concretos, ou perguntar "quais parceiros", chame a função listar_parceiros com a categoria certa. Nunca diga só "temos parceiros bacanas" sem checar — isso soa vazio. Se listar_parceiros não achar a categoria, peça pra pessoa escolher entre as categorias disponíveis que a função retornar.
 
 LIMITE DA DEFESA — honestidade não é negociável:
 - Defender o clube não significa esconder falha real. Se perguntarem especificamente sobre Educação (sem uso real desde 2023), seja transparente — reconheça o ponto e redirecione pro que É forte (as outras categorias, o compromisso de melhorar aquela específica).
@@ -203,10 +262,8 @@ LIMITE DA DEFESA — honestidade não é negociável:
 - Argumentar bem inclui saber admitir o que ainda não está perfeito — isso é o que faz a defesa parecer confiável, não propaganda vazia.
 - Se perguntarem diretamente se você é uma IA, responda honestamente que sim — você é o Mingo em versão IA, não uma pessoa.
 
-FATOS REAIS QUE VOCÊ USA (nunca troque por números inventados):
+DESCONTO MÉDIO E PARCEIROS POR CATEGORIA (fatos reais, use com precisão):
 {linhas_categorias}
-
-REGRA CRÍTICA: sempre que alguém der ou perguntar sobre um número de colaboradores e quiser saber a economia gerada, chame a função calcular_economia. Nunca estime esse valor você mesmo.
 
 Respostas curtas por padrão (2 a 4 frases) — só se estenda se a pessoa pedir mais detalhe."""
 
@@ -246,6 +303,11 @@ def chamar_gemini_agente(historico: list) -> str:
             resultado = calcular_economia(
                 headcount=int(args.get("headcount", 1)),
                 meses=int(args.get("meses", 12)),
+            )
+        elif nome_funcao == "listar_parceiros":
+            resultado = listar_parceiros(
+                categoria=str(args.get("categoria", "")),
+                limite=int(args.get("limite", 8)),
             )
         else:
             resultado = {"erro": f"função desconhecida: {nome_funcao}"}

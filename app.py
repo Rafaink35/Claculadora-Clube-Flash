@@ -17,6 +17,7 @@ abaixo — o resto do app não precisa mudar.
 
 import json
 import os
+import time
 from pathlib import Path
 
 import requests
@@ -33,6 +34,28 @@ GEMINI_URL = (
     f"https://generativelanguage.googleapis.com/v1beta/models/"
     f"{GEMINI_MODEL}:generateContent"
 )
+
+
+def post_gemini(payload: dict, tentativas: int = 2, espera_segundos: int = 5):
+    """Chama a API do Gemini com retry automático em caso de limite de cota
+    (429/RESOURCE_EXHAUSTED) — comum no tier gratuito. Tenta de novo uma vez
+    após uma pausa curta antes de desistir de verdade."""
+    ultima_resp = None
+    for tentativa in range(tentativas):
+        resp = requests.post(GEMINI_URL, params={"key": GEMINI_API_KEY}, json=payload, timeout=20)
+        if resp.ok:
+            return resp
+        ultima_resp = resp
+        if resp.status_code == 429 and tentativa < tentativas - 1:
+            time.sleep(espera_segundos)
+            continue
+        break
+
+    if ultima_resp.status_code == 429:
+        raise RuntimeError(
+            f"RATE_LIMIT: cota gratuita do Gemini excedida (429). {ultima_resp.text[:300]}"
+        )
+    raise RuntimeError(f"Gemini retornou {ultima_resp.status_code}: {ultima_resp.text[:500]}")
 
 
 def carregar_categorias():
@@ -103,15 +126,7 @@ def chamar_gemini(d: dict) -> str:
         "contents": [{"parts": [{"text": montar_prompt(d)}]}],
         "generationConfig": {"temperature": 0.7, "maxOutputTokens": 300},
     }
-    resp = requests.post(
-        GEMINI_URL,
-        params={"key": GEMINI_API_KEY},
-        json=payload,
-        timeout=15,
-    )
-    if not resp.ok:
-        raise RuntimeError(f"Gemini retornou {resp.status_code}: {resp.text[:500]}")
-    data = resp.json()
+    data = post_gemini(payload).json()
     texto = data["candidates"][0]["content"]["parts"][0]["text"]
     return texto.strip()
 
@@ -303,10 +318,7 @@ def chamar_gemini_agente(historico: list) -> str:
         "generationConfig": {"temperature": 0.85, "maxOutputTokens": 400},
     }
 
-    resp = requests.post(GEMINI_URL, params={"key": GEMINI_API_KEY}, json=payload, timeout=20)
-    if not resp.ok:
-        raise RuntimeError(f"Gemini retornou {resp.status_code} na 1a chamada: {resp.text[:500]}")
-    data = resp.json()
+    data = post_gemini(payload).json()
     partes = data["candidates"][0]["content"]["parts"]
 
     function_call = next((p["functionCall"] for p in partes if "functionCall" in p), None)
@@ -341,10 +353,7 @@ def chamar_gemini_agente(historico: list) -> str:
             "tools": [{"functionDeclarations": FUNCTION_DECLARATIONS}],
             "generationConfig": {"temperature": 0.85, "maxOutputTokens": 400},
         }
-        resp2 = requests.post(GEMINI_URL, params={"key": GEMINI_API_KEY}, json=payload2, timeout=20)
-        if not resp2.ok:
-            raise RuntimeError(f"Gemini retornou {resp2.status_code} na 2a chamada: {resp2.text[:500]}")
-        data2 = resp2.json()
+        data2 = post_gemini(payload2).json()
         return data2["candidates"][0]["content"]["parts"][0]["text"].strip()
 
     texto = next((p["text"] for p in partes if "text" in p), None)
@@ -414,11 +423,18 @@ def api_agente():
     except Exception as e:
         app.logger.error("Erro ao chamar Gemini (/api/agente): %s", e, exc_info=True)
         print(f"[ERRO /api/agente] {type(e).__name__}: {e}", flush=True)
-        return jsonify({
-            "resposta": (
+        if "RATE_LIMIT" in str(e):
+            mensagem = (
+                "Muita gente conversando comigo ao mesmo tempo (limite da conta gratuita). "
+                "Espera uns 20-30 segundos e manda de novo, por favor."
+            )
+        else:
+            mensagem = (
                 "Não consegui falar com a IA agora. Você pode tentar de novo em alguns "
                 "segundos, ou usar a calculadora principal em / enquanto isso."
-            ),
+            )
+        return jsonify({
+            "resposta": mensagem,
             "fonte": "erro",
             "aviso": str(e),
         }), 200

@@ -15,6 +15,34 @@ function renderMensagem(role, texto, thinking = false){
   return div;
 }
 
+const MAX_TENTATIVAS_AUTOMATICAS = 3;
+const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function pedirRespostaAoAgente(thinkingEl){
+  // Se a cota da IA estiver cheia, o servidor devolve fonte "rate_limit" com um
+  // tempo sugerido de espera. Em vez de mostrar erro pro cliente, esperamos e
+  // tentamos de novo sozinhos — ele só vê o "pensando..." um pouco mais longo.
+  for (let tentativa = 1; tentativa <= MAX_TENTATIVAS_AUTOMATICAS; tentativa++){
+    const res = await fetch('/api/agente', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ historico }),
+    });
+    const data = await res.json();
+
+    if (data.fonte !== 'rate_limit') return data;
+
+    if (tentativa < MAX_TENTATIVAS_AUTOMATICAS){
+      thinkingEl.textContent = 'Tá bombando por aqui, já te respondo...';
+      await esperar((data.retry_after || 15) * 1000);
+    }
+  }
+  return {
+    fonte: 'erro',
+    resposta: 'Estou com muita procura agora. Manda a mensagem de novo em alguns segundinhos?',
+  };
+}
+
 async function enviarMensagem(texto){
   if (!texto.trim()) return;
 
@@ -29,18 +57,21 @@ async function enviarMensagem(texto){
   const thinkingEl = renderMensagem('assistant', 'Pensando...', true);
 
   try {
-    const res = await fetch('/api/agente', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ historico }),
-    });
-    const data = await res.json();
+    const data = await pedirRespostaAoAgente(thinkingEl);
     thinkingEl.remove();
     renderMensagem('assistant', data.resposta || 'Não consegui responder agora.');
-    historico.push({ role: 'assistant', text: data.resposta || '' });
+
+    if (data.fonte === 'gemini'){
+      historico.push({ role: 'assistant', text: data.resposta });
+    } else {
+      // Mensagem de erro não entra no histórico (o modelo leria como fala dele),
+      // e a pergunta sem resposta sai também, pra o cliente poder reenviar limpo.
+      historico.pop();
+    }
   } catch (err) {
     thinkingEl.remove();
     renderMensagem('assistant', 'Erro de conexão. Tenta de novo em alguns segundos.');
+    historico.pop();
   }
 
   chatInput.disabled = false;

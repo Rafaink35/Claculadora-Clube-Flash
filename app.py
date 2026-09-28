@@ -17,7 +17,7 @@ abaixo — o resto do app não precisa mudar.
 
 import json
 import os
-import time
+import re
 from pathlib import Path
 
 import requests
@@ -29,33 +29,49 @@ DATA_PATH = Path(__file__).parent / "data" / "categorias.json"
 PARCEIROS_PATH = Path(__file__).parent / "data" / "parceiros.json"
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
-GEMINI_URL = (
-    f"https://generativelanguage.googleapis.com/v1beta/models/"
-    f"{GEMINI_MODEL}:generateContent"
-)
+# Lista de modelos em ordem de preferência. Cada modelo tem a SUA PRÓPRIA cota
+# gratuita (por projeto, por modelo) — então, se o primeiro estourar, o
+# backend tenta o próximo na hora, sem dormir e sem travar o worker.
+GEMINI_MODELS = [
+    m.strip()
+    for m in os.environ.get("GEMINI_MODELS", "gemini-2.5-flash,gemini-2.5-flash-lite").split(",")
+    if m.strip()
+]
 
 
-def post_gemini(payload: dict, tentativas: int = 2, espera_segundos: int = 5):
-    """Chama a API do Gemini com retry automático em caso de limite de cota
-    (429/RESOURCE_EXHAUSTED) — comum no tier gratuito. Tenta de novo uma vez
-    após uma pausa curta antes de desistir de verdade."""
-    ultima_resp = None
-    for tentativa in range(tentativas):
-        resp = requests.post(GEMINI_URL, params={"key": GEMINI_API_KEY}, json=payload, timeout=20)
+class RateLimitError(RuntimeError):
+    """Todos os modelos configurados estouraram a cota. Carrega uma sugestão
+    de quanto esperar, para o front-end tentar de novo sozinho."""
+
+    def __init__(self, retry_after: int, detalhe: str = ""):
+        super().__init__(f"RATE_LIMIT: cota do Gemini excedida em todos os modelos. {detalhe}")
+        self.retry_after = retry_after
+
+
+def _extrair_retry_after(texto: str) -> int:
+    """A API costuma dizer 'Please retry in 17.4s'. Extrai isso, com limites
+    razoáveis (entre 3 e 30 segundos)."""
+    m = re.search(r"retry in ([\d.]+)s", texto or "")
+    segundos = float(m.group(1)) if m else 15.0
+    return int(min(max(segundos, 3), 30)) + 1
+
+
+def post_gemini(payload: dict):
+    """Chama o Gemini tentando cada modelo da lista. Só levanta RateLimitError
+    se TODOS responderem 429; qualquer outro erro HTTP sobe como RuntimeError."""
+    ultimo_429 = ""
+    for modelo in GEMINI_MODELS:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{modelo}:generateContent"
+        resp = requests.post(url, params={"key": GEMINI_API_KEY}, json=payload, timeout=25)
         if resp.ok:
             return resp
-        ultima_resp = resp
-        if resp.status_code == 429 and tentativa < tentativas - 1:
-            time.sleep(espera_segundos)
+        if resp.status_code == 429:
+            ultimo_429 = resp.text
+            print(f"[AVISO] 429 no modelo {modelo}, tentando o próximo...", flush=True)
             continue
-        break
+        raise RuntimeError(f"Gemini ({modelo}) retornou {resp.status_code}: {resp.text[:500]}")
 
-    if ultima_resp.status_code == 429:
-        raise RuntimeError(
-            f"RATE_LIMIT: cota gratuita do Gemini excedida (429). {ultima_resp.text[:300]}"
-        )
-    raise RuntimeError(f"Gemini retornou {ultima_resp.status_code}: {ultima_resp.text[:500]}")
+    raise RateLimitError(_extrair_retry_after(ultimo_429), ultimo_429[:300])
 
 
 def carregar_categorias():
@@ -136,28 +152,6 @@ def carregar_parceiros():
         return json.load(f)
 
 
-def listar_parceiros(categoria: str, limite: int = 8) -> dict:
-    """Busca parceiros reais por categoria — o Mingo chama isto em vez de
-    inventar nome de parceiro ou recusar responder."""
-    todos = carregar_parceiros()
-    categoria_norm = categoria.strip().lower()
-    encontrados = [p for p in todos if p["categoria"].strip().lower() == categoria_norm]
-
-    if not encontrados:
-        categorias_disponiveis = sorted(set(p["categoria"] for p in todos))
-        return {
-            "erro": f"categoria '{categoria}' não encontrada",
-            "categorias_disponiveis": categorias_disponiveis,
-        }
-
-    return {
-        "categoria": categoria,
-        "total_parceiros_na_categoria": len(encontrados),
-        "parceiros": [p["nome"] for p in encontrados[:limite]],
-        "mostrando": min(limite, len(encontrados)),
-    }
-
-
 def calcular_economia(headcount: int, meses: int = 12) -> dict:
     """Função real de cálculo — a mesma fórmula usada na calculadora principal.
     É isto que o agente chama via function calling, em vez de inventar números."""
@@ -211,36 +205,19 @@ FUNCTION_DECLARATIONS = [{
         },
         "required": ["headcount"],
     },
-}, {
-    "name": "listar_parceiros",
-    "description": (
-        "Busca os nomes reais de parceiros ativos do Clube Flash numa categoria "
-        "específica (Conveniência, Refeição, Bem-estar, Mobilidade, Educação, "
-        "Saúde, Cultura, Alimentação ou Pets). Chame esta função SEMPRE que o "
-        "usuário pedir nomes de parceiros, exemplos concretos, ou perguntar "
-        "'quais parceiros' — nunca invente nome de parceiro nem diga apenas "
-        "que 'tem muitos parceiros bacanas' sem checar."
-    ),
-    "parameters": {
-        "type": "OBJECT",
-        "properties": {
-            "categoria": {
-                "type": "STRING",
-                "description": "Nome exato da categoria, como aparece na lista de categorias do sistema.",
-            },
-            "limite": {
-                "type": "INTEGER",
-                "description": "Quantos nomes retornar, no máximo. Use 8 se o usuário não especificar.",
-            },
-        },
-        "required": ["categoria"],
-    },
 }]
 
 
 def montar_system_prompt() -> str:
     categorias = carregar_categorias()
     total_parceiros = sum(c["parceiros"] for c in categorias)
+    por_categoria = {}
+    for p in carregar_parceiros():
+        por_categoria.setdefault(p["categoria"], []).append(p["nome"])
+    lista_parceiros = "\n".join(
+        f"- {cat} ({len(nomes)}): " + ", ".join(nomes)
+        for cat, nomes in sorted(por_categoria.items())
+    )
     linhas_categorias = "\n".join(
         f"- {c['nome']}: desconto médio {c['desconto']}% ({c['parceiros']} parceiros ativos, "
         f"{c.get('fonte_uso', 'estimativa')})"
@@ -279,7 +256,7 @@ PROIBIDO — essas são as marcas registradas de "resposta de IA" que fazem pare
 DADOS REAIS QUE VOCÊ DEVE CONSULTAR, NUNCA INVENTAR:
 - Total de parceiros ativos no Clube Flash: {total_parceiros} (use exatamente este número — não some as categorias de cabeça, você erra).
 - Sempre que alguém der ou perguntar sobre um número de colaboradores e quiser saber a economia gerada, chame a função calcular_economia.
-- Sempre que alguém pedir nomes de parceiros, exemplos concretos, ou perguntar "quais parceiros", chame a função listar_parceiros com a categoria certa. Nunca diga só "temos parceiros bacanas" sem checar — isso soa vazio. Se listar_parceiros não achar a categoria, peça pra pessoa escolher entre as categorias disponíveis que a função retornar.
+- Sempre que alguém pedir nomes de parceiros, exemplos concretos, ou perguntar "quais parceiros", responda com nomes reais tirados da LISTA DE PARCEIROS abaixo (escolha 4 a 6 que soem mais reconhecíveis, não despeje a lista inteira). Nunca invente nome que não esteja na lista, e nunca diga só "temos parceiros bacanas" sem citar nomes — isso soa vazio.
 
 LIMITE DA DEFESA — honestidade não é negociável:
 - Defender o clube não significa esconder falha real. Se perguntarem especificamente sobre Educação (sem uso real desde 2023), seja transparente — reconheça o ponto e redirecione pro que É forte (as outras categorias, o compromisso de melhorar aquela específica).
@@ -288,12 +265,15 @@ LIMITE DA DEFESA — honestidade não é negociável:
 - Se perguntarem diretamente se você é uma IA, responda honestamente que sim — você é o Mingo em versão IA, não uma pessoa.
 
 CUIDADO CRÍTICO — o Mapa de Parceiros NÃO é o catálogo completo da Flash:
-- A função listar_parceiros só enxerga os parceiros do Clube B2C. A Flash tem OUTROS produtos e benefícios negociados separadamente com a empresa cliente, fora do Clube.
+- A lista de parceiros abaixo cobre só o Clube B2C. A Flash tem OUTROS produtos e benefícios negociados separadamente com a empresa cliente, fora do Clube.
 - TOTALPASS: a Flash TEM TotalPass, com condições boas pra empresa — mas não é contratado pelo Clube, é direto com o time comercial. Se perguntarem sobre TotalPass, seja AFIRMATIVO: "Sim, a Flash tem TotalPass! Não é pelo Clube, é contratado direto com o nosso time comercial — fala com eles que te passam as condições." Nunca hesite ou trate como incerto — isso é fato confirmado.
-- QUALQUER OUTRO produto/parceiro que listar_parceiros não encontrar: aqui sim, sem confirmação você não sabe se existe. Nunca diga "não temos" nem invente que existe — diga algo como "esse especificamente eu não vejo aqui no Clube, mas pode ser um produto à parte da Flash — vale confirmar com o nosso comercial" e direcione pro time comercial.
+- QUALQUER OUTRO produto/parceiro que NÃO esteja na lista de parceiros abaixo: aqui sim, sem confirmação você não sabe se existe. Nunca diga "não temos" nem invente que existe — diga algo como "esse especificamente eu não vejo aqui no Clube, mas pode ser um produto à parte da Flash — vale confirmar com o nosso comercial" e direcione pro time comercial.
 
 DESCONTO MÉDIO E PARCEIROS POR CATEGORIA (fatos reais, use com precisão):
 {linhas_categorias}
+
+LISTA DE PARCEIROS DO CLUBE (fonte da verdade — só cite nomes que estão aqui):
+{lista_parceiros}
 
 Respostas curtas por padrão (2 a 4 frases) — só se estenda se a pessoa pedir mais detalhe."""
 
@@ -331,11 +311,6 @@ def chamar_gemini_agente(historico: list) -> str:
             resultado = calcular_economia(
                 headcount=int(args.get("headcount", 1)),
                 meses=int(args.get("meses", 12)),
-            )
-        elif nome_funcao == "listar_parceiros":
-            resultado = listar_parceiros(
-                categoria=str(args.get("categoria", "")),
-                limite=int(args.get("limite", 8)),
             )
         else:
             resultado = {"erro": f"função desconhecida: {nome_funcao}"}
@@ -420,21 +395,23 @@ def api_agente():
     try:
         resposta = chamar_gemini_agente(historico)
         return jsonify({"resposta": resposta, "fonte": "gemini"})
+    except RateLimitError as e:
+        # Não é falha de verdade: só cota cheia em todos os modelos. Devolve um
+        # sinal estruturado pro front-end esperar e tentar de novo sozinho.
+        print(f"[RATE LIMIT /api/agente] todos os modelos cheios; sugerir espera de {e.retry_after}s", flush=True)
+        return jsonify({
+            "fonte": "rate_limit",
+            "retry_after": e.retry_after,
+            "resposta": "Tá bombando por aqui, já te respondo...",
+        }), 200
     except Exception as e:
         app.logger.error("Erro ao chamar Gemini (/api/agente): %s", e, exc_info=True)
         print(f"[ERRO /api/agente] {type(e).__name__}: {e}", flush=True)
-        if "RATE_LIMIT" in str(e):
-            mensagem = (
-                "Muita gente conversando comigo ao mesmo tempo (limite da conta gratuita). "
-                "Espera uns 20-30 segundos e manda de novo, por favor."
-            )
-        else:
-            mensagem = (
+        return jsonify({
+            "resposta": (
                 "Não consegui falar com a IA agora. Você pode tentar de novo em alguns "
                 "segundos, ou usar a calculadora principal em / enquanto isso."
-            )
-        return jsonify({
-            "resposta": mensagem,
+            ),
             "fonte": "erro",
             "aviso": str(e),
         }), 200

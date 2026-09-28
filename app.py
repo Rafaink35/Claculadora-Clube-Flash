@@ -109,7 +109,8 @@ def chamar_gemini(d: dict) -> str:
         json=payload,
         timeout=15,
     )
-    resp.raise_for_status()
+    if not resp.ok:
+        raise RuntimeError(f"Gemini retornou {resp.status_code}: {resp.text[:500]}")
     data = resp.json()
     texto = data["candidates"][0]["content"]["parts"][0]["text"]
     return texto.strip()
@@ -298,7 +299,8 @@ def chamar_gemini_agente(historico: list) -> str:
     }
 
     resp = requests.post(GEMINI_URL, params={"key": GEMINI_API_KEY}, json=payload, timeout=20)
-    resp.raise_for_status()
+    if not resp.ok:
+        raise RuntimeError(f"Gemini retornou {resp.status_code} na 1a chamada: {resp.text[:500]}")
     data = resp.json()
     partes = data["candidates"][0]["content"]["parts"]
 
@@ -335,7 +337,8 @@ def chamar_gemini_agente(historico: list) -> str:
             "generationConfig": {"temperature": 0.85, "maxOutputTokens": 400},
         }
         resp2 = requests.post(GEMINI_URL, params={"key": GEMINI_API_KEY}, json=payload2, timeout=20)
-        resp2.raise_for_status()
+        if not resp2.ok:
+            raise RuntimeError(f"Gemini retornou {resp2.status_code} na 2a chamada: {resp2.text[:500]}")
         data2 = resp2.json()
         return data2["candidates"][0]["content"]["parts"][0]["text"].strip()
 
@@ -380,6 +383,8 @@ def api_gerar_narrativa():
         narrativa = chamar_gemini(dados)
         return jsonify({"narrativa": narrativa, "fonte": "gemini"})
     except Exception as e:
+        app.logger.error("Erro ao chamar Gemini (/api/gerar-narrativa): %s", e, exc_info=True)
+        print(f"[ERRO /api/gerar-narrativa] {type(e).__name__}: {e}", flush=True)
         # Nunca deixa a calculadora sem narrativa: cai no template determinístico
         narrativa = montar_narrativa_padrao(dados)
         return jsonify({"narrativa": narrativa, "fonte": "template", "aviso": str(e)})
@@ -402,6 +407,8 @@ def api_agente():
         resposta = chamar_gemini_agente(historico)
         return jsonify({"resposta": resposta, "fonte": "gemini"})
     except Exception as e:
+        app.logger.error("Erro ao chamar Gemini (/api/agente): %s", e, exc_info=True)
+        print(f"[ERRO /api/agente] {type(e).__name__}: {e}", flush=True)
         return jsonify({
             "resposta": (
                 "Não consegui falar com a IA agora. Você pode tentar de novo em alguns "

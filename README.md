@@ -54,6 +54,42 @@ Chat com function calling: quando o usuário menciona um número de
 colaboradores, o Gemini chama `calcular_economia()` no backend em vez de
 estimar de cabeça — a matemática sempre vem do servidor, nunca do modelo.
 
+## Base de parceiros: planilha do time de parcerias
+
+Hoje a fonte de nome/categoria/desconto de parceiro é uma Google Sheet
+mantida pelo time de parcerias — sem precisar de deploy pra atualizar.
+
+**Estrutura da planilha** (primeira aba, primeira linha como cabeçalho):
+
+| nome | categoria | status | desconto_pct |
+|---|---|---|---|
+
+- `categoria` precisa ser exatamente uma de: Conveniência, Refeição,
+  Bem-estar, Mobilidade, Educação, Saúde, Cultura, Alimentação, Pets
+- `status`: `Ativo` ou `Inativo`
+- `desconto_pct`: só o número (ex: `15`), sem o símbolo `%`
+
+**Configuração (uma vez só):**
+
+1. Cria uma conta de serviço no Google Cloud com a Sheets API ativada,
+   gera uma chave JSON
+2. Compartilha a planilha com o e-mail da conta de serviço (campo
+   `client_email` do JSON) como **Leitor**
+3. No Render, configura:
+   - `GOOGLE_SERVICE_ACCOUNT_JSON` — conteúdo inteiro do arquivo `.json`
+   - `PARCEIROS_SHEET_ID` — o ID da planilha (entre `/d/` e `/edit` na URL)
+
+**Cache:** os dados da planilha ficam em cache por 5 minutos — uma edição
+do time de parcerias leva até esse tempo pra refletir no Mingo, sem
+precisar reiniciar nada.
+
+**Fallback:** se a planilha não estiver configurada, ou a leitura falhar
+por qualquer motivo (credencial errada, planilha não compartilhada, etc.),
+o app cai automaticamente para `data/parceiros.json` + `data/categorias.json`
+(o snapshot local, extraído do Mapa de Parceiros B2C) — nunca quebra, só
+fica desatualizado até o problema ser corrigido. O log do servidor mostra
+`[AVISO] Não deu pra ler a planilha do Google...` quando isso acontece.
+
 ## Atualizar os dados de categoria
 
 Quando o Mapa de Parceiros B2C mudar:

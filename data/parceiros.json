@@ -1,774 +1,967 @@
 [
   {
     "nome": "99 Food",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Abbraccio",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Achadinhos da Flash",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Afya Medicina",
-    "categoria": "Educação"
+    "categoria": "Educação",
+    "desconto_pct": null
   },
   {
     "nome": "Afya Saúde, Humanas e Exatas",
-    "categoria": "Educação"
+    "categoria": "Educação",
+    "desconto_pct": null
   },
   {
     "nome": "Airalo",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Airbnb",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Allugator - Iphones",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Allugator - Notebooks",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Alura",
-    "categoria": "Educação"
+    "categoria": "Educação",
+    "desconto_pct": null
   },
   {
     "nome": "Americanas",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Americanas Promo",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Amobeleza",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": null
   },
   {
     "nome": "Anacapri",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Antecipe seu FGTS (Juca)",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Appgas",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Applebee's",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Approve",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Asics",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Assaí",
-    "categoria": "Alimentação"
+    "categoria": "Alimentação",
+    "desconto_pct": null
   },
   {
     "nome": "Avon",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": null
   },
   {
     "nome": "Bacio Di Latte",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Beep Saúde",
-    "categoria": "Saúde"
+    "categoria": "Saúde",
+    "desconto_pct": 10
   },
   {
     "nome": "Beleza Na Web",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": null
   },
   {
     "nome": "Bilhete Único - SPTrans",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": null
   },
   {
     "nome": "Brasil Cacau",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Bráz Pizzaria",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Buddha Spa",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": null
   },
   {
     "nome": "Budz",
-    "categoria": "Pets"
+    "categoria": "Pets",
+    "desconto_pct": 20
   },
   {
     "nome": "Buser - 1ª compra",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": 20
   },
   {
     "nome": "Buser - Recorrente",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": 5
   },
   {
     "nome": "C&A",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Cacau Show",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Carpediem Spa",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": null
   },
   {
     "nome": "Carrefour",
-    "categoria": "Alimentação"
+    "categoria": "Alimentação",
+    "desconto_pct": null
   },
   {
     "nome": "Carrefour Promo",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Carter's",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Casas Bahia",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Casas Bahia Promo",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Centauro",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Centauro Promo",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 15
   },
   {
     "nome": "Cesta Básica",
-    "categoria": "Alimentação"
+    "categoria": "Alimentação",
+    "desconto_pct": null
   },
   {
     "nome": "Cestas Michelli",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 15
   },
   {
     "nome": "China In Box",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": 25
   },
   {
     "nome": "Cinemark",
-    "categoria": "Cultura"
+    "categoria": "Cultura",
+    "desconto_pct": null
   },
   {
     "nome": "Claro",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Clickbus - 1ª compra",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": null
   },
   {
     "nome": "Clickbus - Recorrente",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": 10
   },
   {
     "nome": "Clubinho de Ofertas",
-    "categoria": "Cultura"
+    "categoria": "Cultura",
+    "desconto_pct": 80
   },
   {
     "nome": "Clude Saúde",
-    "categoria": "Saúde"
+    "categoria": "Saúde",
+    "desconto_pct": null
   },
   {
     "nome": "Cobasi",
-    "categoria": "Pets"
+    "categoria": "Pets",
+    "desconto_pct": null
   },
   {
     "nome": "Coco Bambu",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "ConectCar",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": null
   },
   {
     "nome": "Conquer Plus",
-    "categoria": "Educação"
+    "categoria": "Educação",
+    "desconto_pct": null
   },
   {
     "nome": "Conquer Pós-graduação",
-    "categoria": "Educação"
+    "categoria": "Educação",
+    "desconto_pct": null
   },
   {
     "nome": "Consul",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Crédito do Trabalhador (Consignado Paketá)",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Cubos Academy",
-    "categoria": "Educação"
+    "categoria": "Educação",
+    "desconto_pct": null
   },
   {
     "nome": "Dafiti",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 80
   },
   {
     "nome": "Daki - 1° Compra",
-    "categoria": "Alimentação"
+    "categoria": "Alimentação",
+    "desconto_pct": null
   },
   {
     "nome": "Daki - Recorrente",
-    "categoria": "Alimentação"
+    "categoria": "Alimentação",
+    "desconto_pct": null
   },
   {
     "nome": "Darkness",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": 15
   },
   {
     "nome": "Decathlon",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Decathlon Promo",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Decolar",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Descomplica",
-    "categoria": "Educação"
+    "categoria": "Educação",
+    "desconto_pct": 20
   },
   {
     "nome": "Descomplica Pós-Graduação",
-    "categoria": "Educação"
+    "categoria": "Educação",
+    "desconto_pct": 35
   },
   {
     "nome": "Descontos em cinemas",
-    "categoria": "Cultura"
+    "categoria": "Cultura",
+    "desconto_pct": null
   },
   {
     "nome": "Domino's Pizza",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Dr. AuAu | Primeiro uso",
-    "categoria": "Pets"
+    "categoria": "Pets",
+    "desconto_pct": 25
   },
   {
     "nome": "Dr. AuAu | Recorrente",
-    "categoria": "Pets"
+    "categoria": "Pets",
+    "desconto_pct": 10
   },
   {
     "nome": "Dr. Peanut",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Drogaria Araújo",
-    "categoria": "Saúde"
+    "categoria": "Saúde",
+    "desconto_pct": null
   },
   {
     "nome": "Ecoparada Madero",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Emma Colchões",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 10
   },
   {
     "nome": "Empréstimo Pessoal NoVerde",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Empréstimo Pessoal SuperSim",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Empréstimo Salarial (Blipay)",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Evino",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Extra",
-    "categoria": "Alimentação"
+    "categoria": "Alimentação",
+    "desconto_pct": null
   },
   {
     "nome": "Fever",
-    "categoria": "Cultura"
+    "categoria": "Cultura",
+    "desconto_pct": null
   },
   {
     "nome": "Fila",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 15
   },
   {
     "nome": "Flash + Cacau Show",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Giuliana Flores",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 20
   },
   {
     "nome": "Gocase",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 15
   },
   {
     "nome": "Granado",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": null
   },
   {
     "nome": "Havaianas",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Hering",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 15
   },
   {
     "nome": "Hertz | Dollar | Thrifty",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": null
   },
   {
     "nome": "Hoteis.com",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 6
   },
   {
     "nome": "Imaginarium",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 10
   },
   {
     "nome": "Insider - 1ª compra",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 18
   },
   {
     "nome": "Insider Recorrente",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 15
   },
   {
     "nome": "Integralmedica",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": 15
   },
   {
     "nome": "Jardim Botânico de São Paulo",
-    "categoria": "Cultura"
+    "categoria": "Cultura",
+    "desconto_pct": null
   },
   {
     "nome": "Jequiti",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": 15
   },
   {
     "nome": "Jeronimo by Madero",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Keeta",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Klubi Auto",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": 85
   },
   {
     "nome": "Klubi Celular",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 85
   },
   {
     "nome": "Klubi Moto",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": 85
   },
   {
     "nome": "Kopenhagen",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "La Guapa",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": 10
   },
   {
     "nome": "Labi Exames",
-    "categoria": "Saúde"
+    "categoria": "Saúde",
+    "desconto_pct": 30
   },
   {
     "nome": "Life By Vivara",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Localiza Assinatura",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": null
   },
   {
     "nome": "Luckau",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": 18
   },
   {
     "nome": "Madero",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Mais Mu",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": 10
   },
   {
     "nome": "Marmitaria New Fit - 1ª compra",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": 20
   },
   {
     "nome": "Marmitaria New Fit - Recorrente",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": 12
   },
   {
     "nome": "Mascavo",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": 15
   },
   {
     "nome": "Mash",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 15
   },
   {
     "nome": "McDonald's",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Mizuno",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 15
   },
   {
     "nome": "Morana",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 12
   },
   {
     "nome": "Movida",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": null
   },
   {
     "nome": "Multilaser",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 5
   },
   {
     "nome": "Natura",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": 15
   },
   {
     "nome": "Netshoes",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Netshoes Promo",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 10
   },
   {
     "nome": "Nike",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 10
   },
   {
     "nome": "Nintendo",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Nomad",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Nutrify",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": 15
   },
   {
     "nome": "OBoticário",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": null
   },
   {
     "nome": "OBoticário Promo",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": 15
   },
   {
     "nome": "Océane",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": 15
   },
   {
     "nome": "Olenna Beauty",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": 10
   },
   {
     "nome": "Olympikus",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 15
   },
   {
     "nome": "Open English",
-    "categoria": "Educação"
+    "categoria": "Educação",
+    "desconto_pct": 80
   },
   {
     "nome": "Óticas Diniz",
-    "categoria": "Saúde"
+    "categoria": "Saúde",
+    "desconto_pct": 10
   },
   {
     "nome": "Outback",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Pague Menos Cards",
-    "categoria": "Saúde"
+    "categoria": "Saúde",
+    "desconto_pct": null
   },
   {
     "nome": "Petlove",
-    "categoria": "Pets"
+    "categoria": "Pets",
+    "desconto_pct": 25
   },
   {
     "nome": "Petz",
-    "categoria": "Pets"
+    "categoria": "Pets",
+    "desconto_pct": null
   },
   {
     "nome": "Petz Promo",
-    "categoria": "Pets"
+    "categoria": "Pets",
+    "desconto_pct": 10
   },
   {
     "nome": "Pobre Juan",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Pontofrio",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Pontofrio Promo",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Positivo",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Primeira",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": 20
   },
   {
     "nome": "Pronto Light - 1ª compra",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": 15
   },
   {
     "nome": "Pronto Light - Recorrente",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": 12
   },
   {
     "nome": "Puket",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 10
   },
   {
     "nome": "Rappi",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Razer Gold",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Renner",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Renner Promo",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 15
   },
   {
     "nome": "Ri Happy",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Riachuelo",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Riachuelo Promo",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 12
   },
   {
     "nome": "Ritua",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": null
   },
   {
     "nome": "Salon Line",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 15
   },
   {
     "nome": "Sam's Club",
-    "categoria": "Alimentação"
+    "categoria": "Alimentação",
+    "desconto_pct": 21
   },
   {
     "nome": "Sanavita",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": 10
   },
   {
     "nome": "Seguro Auto (Porto)",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": null
   },
   {
     "nome": "Seguro Celular (Porto)",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Seguro Residencial (Porto)",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Seguro Viagem (Porto)",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": null
   },
   {
     "nome": "Sem Parar Promo",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": null
   },
   {
     "nome": "Sephora",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": 10
   },
   {
     "nome": "Shoppe",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Sony PlayStation",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Spicy",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Stanley",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 10
   },
   {
     "nome": "Sul América Odonto",
-    "categoria": "Saúde"
+    "categoria": "Saúde",
+    "desconto_pct": null
   },
   {
     "nome": "The North Face",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 12
   },
   {
     "nome": "Thermas da Mata",
-    "categoria": "Cultura"
+    "categoria": "Cultura",
+    "desconto_pct": 22
   },
   {
     "nome": "Thermas da Mata | Hotel",
-    "categoria": "Cultura"
+    "categoria": "Cultura",
+    "desconto_pct": 15
   },
   {
     "nome": "TIM",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Tok&Stok",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "TotalPass Lite",
-    "categoria": "Bem-estar"
+    "categoria": "Bem-estar",
+    "desconto_pct": null
   },
   {
     "nome": "Turbi | Assinatura",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": null
   },
   {
     "nome": "Turbi | Locações",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": null
   },
   {
     "nome": "Uber",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": null
   },
   {
     "nome": "Uber Cards",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": null
   },
   {
     "nome": "Umbro",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 15
   },
   {
     "nome": "Under Armour",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": 15
   },
   {
     "nome": "Unidas",
-    "categoria": "Mobilidade"
+    "categoria": "Mobilidade",
+    "desconto_pct": null
   },
   {
     "nome": "Universidade Cruzeiro do Sul",
-    "categoria": "Educação"
+    "categoria": "Educação",
+    "desconto_pct": 20
   },
   {
     "nome": "Unmaze",
-    "categoria": "Educação"
+    "categoria": "Educação",
+    "desconto_pct": null
   },
   {
     "nome": "USP ECA",
-    "categoria": "Educação"
+    "categoria": "Educação",
+    "desconto_pct": null
   },
   {
     "nome": "VAIO",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Velotax",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Vivara",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Vivo",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "W.dental",
-    "categoria": "Saúde"
+    "categoria": "Saúde",
+    "desconto_pct": null
   },
   {
     "nome": "Wizard - Online",
-    "categoria": "Educação"
+    "categoria": "Educação",
+    "desconto_pct": 70
   },
   {
     "nome": "Wizard - Presencial",
-    "categoria": "Educação"
+    "categoria": "Educação",
+    "desconto_pct": 50
   },
   {
     "nome": "Zapay",
-    "categoria": "Conveniência"
+    "categoria": "Conveniência",
+    "desconto_pct": null
   },
   {
     "nome": "Zé Delivery Cards",
-    "categoria": "Refeição"
+    "categoria": "Refeição",
+    "desconto_pct": null
   },
   {
     "nome": "Zoo SP",
-    "categoria": "Cultura"
+    "categoria": "Cultura",
+    "desconto_pct": null
   }
 ]

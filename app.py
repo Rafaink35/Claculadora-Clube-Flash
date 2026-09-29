@@ -18,6 +18,7 @@ abaixo — o resto do app não precisa mudar.
 import json
 import os
 import re
+import time
 from pathlib import Path
 
 import requests
@@ -27,6 +28,120 @@ app = Flask(__name__)
 
 DATA_PATH = Path(__file__).parent / "data" / "categorias.json"
 PARCEIROS_PATH = Path(__file__).parent / "data" / "parceiros.json"
+USO_REAL_PATH = Path(__file__).parent / "data" / "uso_real.json"
+
+GOOGLE_SERVICE_ACCOUNT_JSON = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
+PARCEIROS_SHEET_ID = os.environ.get("PARCEIROS_SHEET_ID")
+CATEGORIAS_VALIDAS = [
+    "Conveniência", "Refeição", "Bem-estar", "Mobilidade", "Educação",
+    "Saúde", "Cultura", "Alimentação", "Pets",
+]
+
+# Correções manuais que continuam valendo por cima de QUALQUER fonte de dado
+# de parceiro (planilha nova ou arquivo local) — ver justificativa completa
+# em scripts/extrair_categorias.py. O time de parcerias não precisa saber
+# disso; é ajuste técnico baseado em volume real do Databricks.
+CORRECOES_MANUAIS = {
+    "Mobilidade": {
+        "desconto_corrigido": 0.0,
+        "nota": (
+            "Corrigido em 27/09/2026: dentro da própria categoria Mobilidade, 100% do TPV "
+            "real dos últimos 5 meses (Databricks) vem de Bilhete Único SPTrans (74,6%), "
+            "Uber (22,2%) e Uber Cards (3,2%) — nenhum com desconto percentual documentado. "
+            "A média simples entre parceiros não reflete a economia real da categoria; o "
+            "desconto real ponderado por volume é ~0%."
+        ),
+    },
+}
+
+_cache_parceiros_brutos = {"dados": None, "buscado_em": 0, "fonte": None}
+CACHE_TTL_SEGUNDOS = 300  # 5 minutos — evita bater na planilha a cada mensagem do chat
+
+
+def _buscar_da_planilha_google() -> list[dict]:
+    """Lê a planilha do time de parcerias via conta de serviço. Levanta
+    exceção se as credenciais não estiverem configuradas ou a leitura falhar
+    — quem chama decide o fallback."""
+    if not GOOGLE_SERVICE_ACCOUNT_JSON or not PARCEIROS_SHEET_ID:
+        raise RuntimeError("GOOGLE_SERVICE_ACCOUNT_JSON ou PARCEIROS_SHEET_ID não configurados")
+
+    import gspread
+    from google.oauth2.service_account import Credentials
+
+    credenciais_dict = json.loads(GOOGLE_SERVICE_ACCOUNT_JSON)
+    escopos = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
+    creds = Credentials.from_service_account_info(credenciais_dict, scopes=escopos)
+    cliente = gspread.authorize(creds)
+    planilha = cliente.open_by_key(PARCEIROS_SHEET_ID).sheet1
+    linhas = planilha.get_all_records()  # usa a 1a linha como cabeçalho
+
+    parceiros = []
+    for linha in linhas:
+        nome = str(linha.get("nome", "")).strip()
+        categoria = str(linha.get("categoria", "")).strip()
+        status = str(linha.get("status", "")).strip()
+        desconto_raw = linha.get("desconto_pct", "")
+        if not nome or not categoria:
+            continue
+        if categoria not in CATEGORIAS_VALIDAS:
+            print(f"[AVISO planilha] categoria '{categoria}' em '{nome}' não é uma das 9 válidas — ignorando linha", flush=True)
+            continue
+        try:
+            desconto_pct = float(str(desconto_raw).replace("%", "").replace(",", ".").strip() or 0)
+        except ValueError:
+            desconto_pct = 0.0
+        parceiros.append({
+            "nome": nome,
+            "categoria": categoria,
+            "status": status,
+            "desconto_pct": desconto_pct,
+        })
+
+    if not parceiros:
+        raise RuntimeError("planilha respondeu mas não trouxe nenhuma linha válida")
+    return parceiros
+
+
+def _buscar_do_arquivo_local() -> list[dict]:
+    """Fallback: lê direto de data/parceiros.json, que já traz o desconto
+    documentado por parceiro individual (extraído da condição comercial no
+    Mapa de Parceiros). Parceiro sem % explícito na condição vem com
+    desconto_pct = None — o Mingo é instruído a dizer isso com honestidade,
+    não a inventar um número."""
+    with open(PARCEIROS_PATH, encoding="utf-8") as f:
+        parceiros = json.load(f)
+    return [
+        {
+            "nome": p["nome"],
+            "categoria": p["categoria"],
+            "status": "Ativo",
+            "desconto_pct": p.get("desconto_pct"),
+        }
+        for p in parceiros
+    ]
+
+
+def buscar_parceiros_brutos(forcar: bool = False) -> list[dict]:
+    """Fonte única da verdade sobre parceiros: tenta a planilha do Google
+    primeiro (o time de parcerias edita ali, sem precisar de deploy), com
+    cache de alguns minutos; cai pro arquivo local se a planilha falhar ou
+    não estiver configurada."""
+    agora = time.time()
+    if not forcar and _cache_parceiros_brutos["dados"] is not None:
+        if agora - _cache_parceiros_brutos["buscado_em"] < CACHE_TTL_SEGUNDOS:
+            return _cache_parceiros_brutos["dados"]
+
+    try:
+        dados = _buscar_da_planilha_google()
+        fonte = "planilha_google"
+    except Exception as e:
+        print(f"[AVISO] Não deu pra ler a planilha do Google ({e}); usando arquivo local.", flush=True)
+        dados = _buscar_do_arquivo_local()
+        fonte = "arquivo_local"
+
+    _cache_parceiros_brutos.update({"dados": dados, "buscado_em": agora, "fonte": fonte})
+    return dados
+
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 # Lista de modelos em ordem de preferência. Cada modelo tem a SUA PRÓPRIA cota
@@ -75,8 +190,47 @@ def post_gemini(payload: dict):
 
 
 def carregar_categorias():
-    with open(DATA_PATH, encoding="utf-8") as f:
-        return json.load(f)
+    """Monta a lista de categorias (desconto, contagem de parceiros, freq/ticket
+    reais) a partir da fonte viva de parceiros + do uso real do Databricks."""
+    brutos = buscar_parceiros_brutos()
+    ativos = [p for p in brutos if p["status"].strip().lower() == "ativo"]
+
+    with open(USO_REAL_PATH, encoding="utf-8") as f:
+        uso_real = json.load(f)
+
+    categorias = []
+    for nome_cat in CATEGORIAS_VALIDAS:
+        da_categoria = [p for p in ativos if p["categoria"] == nome_cat]
+        if not da_categoria:
+            continue
+
+        descontos = [p["desconto_pct"] for p in da_categoria if p["desconto_pct"] is not None]
+        desconto_medio = round(sum(descontos) / len(descontos), 1) if descontos else 0.0
+
+        real = uso_real.get(nome_cat)
+        freq = real["freq_media_mes"] if real else 1.0
+        ticket = real["ticket_medio"] if real else 80.0
+        fonte_uso = "real (mai-set/2026)" if real else "estimativa (sem transação real desde 2023)"
+
+        cat = {
+            "id": nome_cat.lower().replace(" ", "_").replace("-", "_"),
+            "nome": nome_cat,
+            "parceiros": len(da_categoria),
+            "desconto": desconto_medio,
+            "freq": freq,
+            "ticket": ticket,
+            "fonte_uso": fonte_uso,
+        }
+
+        correcao = CORRECOES_MANUAIS.get(nome_cat)
+        if correcao:
+            cat["desconto_medio_simples_nao_ponderado"] = desconto_medio
+            cat["desconto"] = correcao["desconto_corrigido"]
+            cat["nota_correcao"] = correcao["nota"]
+
+        categorias.append(cat)
+
+    return categorias
 
 
 def formatar_brl(valor: float) -> str:
@@ -148,8 +302,14 @@ def chamar_gemini(d: dict) -> str:
 
 
 def carregar_parceiros():
-    with open(PARCEIROS_PATH, encoding="utf-8") as f:
-        return json.load(f)
+    """Nomes reais de parceiros ativos, usados na lista que vai pro prompt do
+    Mingo. Mesma fonte viva de carregar_categorias()."""
+    brutos = buscar_parceiros_brutos()
+    return [
+        {"nome": p["nome"], "categoria": p["categoria"], "desconto_pct": p.get("desconto_pct")}
+        for p in brutos
+        if p["status"].strip().lower() == "ativo"
+    ]
 
 
 def calcular_economia(headcount: int, meses: int = 12) -> dict:
@@ -213,10 +373,11 @@ def montar_system_prompt() -> str:
     total_parceiros = sum(c["parceiros"] for c in categorias)
     por_categoria = {}
     for p in carregar_parceiros():
-        por_categoria.setdefault(p["categoria"], []).append(p["nome"])
+        etiqueta = f"{p['nome']} ({p['desconto_pct']}% OFF)" if p.get("desconto_pct") is not None else f"{p['nome']} (% não documentado)"
+        por_categoria.setdefault(p["categoria"], []).append(etiqueta)
     lista_parceiros = "\n".join(
-        f"- {cat} ({len(nomes)}): " + ", ".join(nomes)
-        for cat, nomes in sorted(por_categoria.items())
+        f"- {cat} ({len(itens)}): " + ", ".join(itens)
+        for cat, itens in sorted(por_categoria.items())
     )
     linhas_categorias = "\n".join(
         f"- {c['nome']}: desconto médio {c['desconto']}% ({c['parceiros']} parceiros ativos, "
@@ -257,6 +418,7 @@ DADOS REAIS QUE VOCÊ DEVE CONSULTAR, NUNCA INVENTAR:
 - Total de parceiros ativos no Clube Flash: {total_parceiros} (use exatamente este número — não some as categorias de cabeça, você erra).
 - Sempre que alguém der ou perguntar sobre um número de colaboradores e quiser saber a economia gerada, chame a função calcular_economia.
 - Sempre que alguém pedir nomes de parceiros, exemplos concretos, ou perguntar "quais parceiros", responda com nomes reais tirados da LISTA DE PARCEIROS abaixo (escolha 4 a 6 que soem mais reconhecíveis, não despeje a lista inteira). Nunca invente nome que não esteja na lista, e nunca diga só "temos parceiros bacanas" sem citar nomes — isso soa vazio.
+- Sempre que alguém perguntar o desconto de UM parceiro específico (ex: "qual o desconto da Nike?"), procure o nome na LISTA DE PARCEIROS abaixo e responda com o % exato entre parênteses. Se aparecer "% não documentado" pra aquele parceiro, seja honesto: diga que o desconto exato não está documentado aqui, mas que o parceiro é ativo e vale confirmar direto no app ou com o comercial — nunca invente um número.
 
 LIMITE DA DEFESA — honestidade não é negociável:
 - Defender o clube não significa esconder falha real. Se perguntarem especificamente sobre Educação (sem uso real desde 2023), seja transparente — reconheça o ponto e redirecione pro que É forte (as outras categorias, o compromisso de melhorar aquela específica).
@@ -266,7 +428,10 @@ LIMITE DA DEFESA — honestidade não é negociável:
 
 CUIDADO CRÍTICO — o Mapa de Parceiros NÃO é o catálogo completo da Flash:
 - A lista de parceiros abaixo cobre só o Clube B2C. A Flash tem OUTROS produtos e benefícios negociados separadamente com a empresa cliente, fora do Clube.
-- TOTALPASS: a Flash TEM TotalPass, com condições boas pra empresa — mas não é contratado pelo Clube, é direto com o time comercial. Se perguntarem sobre TotalPass, seja AFIRMATIVO: "Sim, a Flash tem TotalPass! Não é pelo Clube, é contratado direto com o nosso time comercial — fala com eles que te passam as condições." Nunca hesite ou trate como incerto — isso é fato confirmado.
+- TOTALPASS: existem DUAS coisas diferentes aqui, não confunda:
+  1) TotalPass corporativo (o plano completo, contratado PELA EMPRESA) — isso NÃO é pelo Clube, é direto com o time comercial. Se perguntarem sobre TotalPass corporativo, seja AFIRMATIVO: "Sim, a Flash tem TotalPass! O plano corporativo é contratado direto com o nosso time comercial — fala com eles que te passam as condições."
+  2) TP Lite — esse SIM é dentro do Clube Flash: o colaborador contrata sozinho, por R$ 69,90/mês, direto pelo app, com acesso a mais de 6.000 academias e conteúdo de bem-estar. Funciona até pra empresa que não tem o TotalPass corporativo. Se perguntarem "e se minha empresa não tem TotalPass?", é o TP Lite que resolve — cite ele com confiança, é produto real e lançado recentemente.
+  Nunca hesite ou trate como incerto — os dois são fatos confirmados.
 - QUALQUER OUTRO produto/parceiro que NÃO esteja na lista de parceiros abaixo: aqui sim, sem confirmação você não sabe se existe. Nunca diga "não temos" nem invente que existe — diga algo como "esse especificamente eu não vejo aqui no Clube, mas pode ser um produto à parte da Flash — vale confirmar com o nosso comercial" e direcione pro time comercial.
 
 DESCONTO MÉDIO E PARCEIROS POR CATEGORIA (fatos reais, use com precisão):

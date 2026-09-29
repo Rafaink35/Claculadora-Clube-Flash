@@ -12,3 +12,7 @@ services:
         sync: false
       - key: N8N_WEBHOOK_URL
         sync: false
+      - key: GOOGLE_SERVICE_ACCOUNT_JSON
+        sync: false
+      - key: PARCEIROS_SHEET_ID
+        sync: false

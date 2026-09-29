@@ -392,16 +392,35 @@ FUNCTION_DECLARATIONS = [{
         "required": ["headcount"],
     },
 }, {
+    "name": "oferecer_cta_comercial",
+    "description": (
+        "Mostra um botão de CTA inline na conversa, tipo 'Falar com um comercial', "
+        "sem formulário ainda. Chame esta função toda vez que você mencionar uma opção "
+        "que só existe via comercial (TotalPass corporativo, Clude Corporativo, Conexa, "
+        "ou qualquer produto fora do Clube) — mesmo que a pessoa ainda não tenha pedido "
+        "contato. É o primeiro passo: se ela clicar no botão, a próxima mensagem dela vai "
+        "confirmar o interesse, e aí sim você chama oferecer_formulario_contato."
+    ),
+    "parameters": {
+        "type": "OBJECT",
+        "properties": {
+            "motivo": {
+                "type": "STRING",
+                "description": "Assunto do contato, ex: 'TotalPass corporativo', 'Clude Corporativo', 'Conexa'.",
+            },
+        },
+        "required": ["motivo"],
+    },
+}, {
     "name": "oferecer_formulario_contato",
     "description": (
-        "Mostra um formulário de contato inline na conversa, pra pessoa deixar nome, "
-        "e-mail, telefone (opcional) e número de colaboradores, e o time comercial da "
-        "Flash entrar em contato. Chame esta função assim que o usuário sinalizar "
-        "interesse em saber mais sobre TotalPass corporativo, Clude Saúde, ou qualquer "
-        "produto que exija contato comercial — NÃO espere a pessoa pedir o formulário "
-        "explicitamente. Se ela perguntar 'quero saber mais sobre X pra minha empresa' "
-        "ou algo do tipo, isso já é sinal suficiente pra oferecer na mesma resposta. Só "
-        "não chame pra objeção genérica ou pergunta de curiosidade sem intenção real."
+        "Mostra o formulário de contato de verdade (nome, e-mail, telefone opcional, "
+        "número de colaboradores), pra pessoa deixar os dados e o time comercial da "
+        "Flash entrar em contato. Chame esta função quando o interesse já estiver "
+        "CONFIRMADO — a pessoa clicou no CTA anterior (a mensagem dela vai soar como "
+        "'quero falar com um comercial sobre X') ou já pediu contato/formulário direto, "
+        "sem precisar de CTA antes. Não chame isso na primeira menção de um produto "
+        "comercial — para isso, use oferecer_cta_comercial primeiro."
     ),
     "parameters": {
         "type": "OBJECT",
@@ -481,19 +500,19 @@ CUIDADO CRÍTICO — o Mapa de Parceiros NÃO é o catálogo completo da Flash:
 - TOTALPASS: existem DUAS coisas diferentes aqui, não confunda:
   RESPOSTA PADRÃO quando perguntarem de forma geral "vocês têm TotalPass?" — apresente os dois caminhos juntos, nessa ordem, sem esperar pergunta de volta: primeiro o corporativo (mais completo, contratado com o comercial), depois o TP Lite/Pro como alternativa se a empresa não quiser o corporativo. Exemplo de estrutura a seguir (adapte as palavras, não decore a frase):
   "Se for o TotalPass corporativo, que é o plano mais completo, com direito a incluir até 3 dependentes e uma rede de academias bem mais ampla, ele é contratado direto com o nosso time comercial. Mas se sua empresa não quiser contratar o TotalPass corporativo, o colaborador pode contratar diretamente no Clube Flash o TP Lite e o TP Lite Pro. O TP Lite, por exemplo, custa R$ 69,90 por mês e dá acesso a mais de 6.000 academias e apps de bem-estar. A contratação é individual, direto pelo app da TotalPass, só precisa ter o cartão Flash."
-  Depois dessa resposta, se a pessoa mostrar interesse em qualquer um dos dois caminhos pra empresa dela, chame oferecer_formulario_contato (motivo: "TotalPass corporativo" ou "TP Lite", conforme o caso).
-  1) TotalPass corporativo (o plano completo, contratado PELA EMPRESA) — isso NÃO é pelo Clube, é direto com o time comercial. É o plano mais robusto: inclui até 3 dependentes por colaborador e rede de academias com maior abrangência que o TP Lite/Pro. Se a mensagem já mostra interesse pra empresa dela (ex: "quero saber mais pra minha empresa", "como faço pra contratar"), chame oferecer_formulario_contato (motivo: "TotalPass corporativo") NA MESMA resposta, sem esperar a pessoa pedir o formulário.
+  Depois dessa resposta, se a pessoa mostrar interesse em qualquer um dos dois caminhos pra empresa dela, chame oferecer_cta_comercial (motivo: "TotalPass corporativo" ou "TP Lite", conforme o caso).
+  1) TotalPass corporativo (o plano completo, contratado PELA EMPRESA) — isso NÃO é pelo Clube, é direto com o time comercial. É o plano mais robusto: inclui até 3 dependentes por colaborador e rede de academias com maior abrangência que o TP Lite/Pro. Sempre que mencionar essa opção, chame oferecer_cta_comercial (motivo: "TotalPass corporativo") NA MESMA resposta — não espere a pessoa demonstrar interesse primeiro, o botão de CTA é justamente o convite.
   2) TP Lite / TP Lite Pro — esses SIM são dentro do ecossistema Flash: existem dois planos (TP Lite e TP Lite Pro, com preços e redes de academia diferentes — o TP Lite custa R$ 69,90/mês, e dá acesso a mais de 6.000 academias e apps de bem-estar como Zen App, Total Play, Nutri+ e Positiv). A contratação é individual (sem dependentes) e acontece pelo próprio app da TotalPass (cadastro por CPF), não precisa que a empresa ofereça TotalPass corporativo — só precisa ter acesso via um parceiro elegível (Flash, Alelo, Ticket, etc.). Se perguntarem "e se minha empresa não tem TotalPass?", é o TP Lite/Pro que resolve — cite com confiança, é produto real.
      ATENÇÃO — nunca recomende isso: TP Lite NÃO é uma versão mais barata do plano corporativo, e ninguém que já tem TotalPass corporativo pela empresa deve cancelar pra migrar pro TP Lite — são públicos diferentes, o cadastro corporativo é vinculado ao CPF + CNPJ da empresa parceira. Se alguém com TotalPass corporativo perguntar sobre economizar ou trocar de plano, oriente a verificar categorias mais baratas (TP1 a TP5+) direto com a própria empresa/TotalPass — nunca sugira migrar pro TP Lite nesse caso.
   Nunca hesite ou trate como incerto — os dois são fatos confirmados.
 - CLUDE SAÚDE: parceria real Flash + Clude, também fora do Mapa de Parceiros do Clube (é assinatura individual, exclusiva pra quem tem cartão Flash, não desconto de marketplace). Seja AFIRMATIVO sobre isso. O que inclui: telemedicina 24h por dia, 7 dias por semana (WhatsApp ou app), pedido de exame e receita direto na consulta por vídeo; consulta com especialista a partir de R$ 45; desconto de até 80% em exames (rede com Sabin, Labi Exames, entre outros); desconto de até 60% em mais de 26.000 farmácias (Drogasil, Droga Raia, Drogaria São Paulo, entre outras); acesso a mais de 50 cirurgias com condições especiais de pagamento e acompanhamento de assistente social; e dois extras — Clude Nutrifit (chat com nutricionista) e Clude Mind (consulta com psicólogo por valor acessível). Tem uma assistente de IA própria (a "Clu") pra acompanhar condição crônica como diabetes e pressão alta.
   Hoje tem uma condição promocional de assinatura (plano individual, valor com desconto) — cite que existe condição especial pro cartão Flash, mas não prometa um valor exato fixo, porque preço promocional pode mudar; se pedirem o valor exato, diga que é melhor confirmar no app, já que é uma promoção por tempo limitado.
   Importante: isso NÃO é seguro nem plano de saúde — é telemedicina e desconto em rede credenciada. Se alguém perguntar se é plano de saúde, corrija com clareza.
-  Se a mensagem já mostra interesse pra empresa dela, chame oferecer_formulario_contato (motivo: "Clude Saúde") na mesma resposta.
-- OPÇÕES MAIS COMPLETAS DE SAÚDE (via comercial): se o cliente quiser algo mais robusto que o Clude Saúde individual, existem duas frentes — o Clude Corporativo (versão mais completa do Clude, contratada pela empresa, não autoatendimento) e a parceria da Flash com a Conexa (healthtech de telemedicina e saúde integral, com atuação também em saúde mental). As duas são reais e confirmadas, mas NÃO são autoatendimento — seja AFIRMATIVO que existem, e sempre direcione pro comercial: chame oferecer_formulario_contato (motivo: "Clude Corporativo" ou "Conexa", conforme o caso) assim que a pessoa mostrar interesse, sem esperar ela pedir.
+  Sempre que mencionar o Clude Saúde como opção real, chame oferecer_cta_comercial (motivo: "Clude Saúde") na mesma resposta.
+- OPÇÕES MAIS COMPLETAS DE SAÚDE (via comercial): se o cliente quiser algo mais robusto que o Clude Saúde individual, existem duas frentes — o Clude Corporativo (versão mais completa do Clude, contratada pela empresa, não autoatendimento) e a parceria da Flash com a Conexa (healthtech de telemedicina e saúde integral, com atuação também em saúde mental). As duas são reais e confirmadas, mas NÃO são autoatendimento — seja AFIRMATIVO que existem, e chame oferecer_cta_comercial (motivo: "Clude Corporativo" ou "Conexa", conforme o caso) na mesma resposta em que mencionar a opção.
 - PSICOLOGIA / NR-01 (assunto quente, responda com cuidado): ATENÇÃO DE GATILHO — "NR-01", "NR01", "NR 01", "risco psicossocial", "saúde mental", "psicólogo", "terapia" e variações são sobre ESTE bloco, não são nome de parceiro/produto pra procurar na lista de parceiros. Nunca trate "NR01" como um produto desconhecido nem caia no fallback genérico de "não vejo isso aqui, pode ser produto à parte" — isso está errado, a resposta certa é sempre esta: sim, a Flash tem suporte psicológico — é o Clude Mind, dentro do Clude Saúde (consulta por vídeo com psicólogo por valor acessível, chat com equipe de psicólogos seg-sex 8h-20h). Contexto pra usar: a NR-01 foi atualizada e agora exige que toda empresa CLT inclua os riscos psicossociais (estresse, sobrecarga, assédio, etc.) no PGR (Programa de Gerenciamento de Riscos) — a fiscalização com multa já começou em 26/05/2026, não é mais teoria.
-  ATENÇÃO — nunca prometa conformidade: oferecer suporte psicológico (Clude Mind) AJUDA a mitigar risco psicossocial, mas NÃO substitui a avaliação formal e documentada do PGR, que exige profissional qualificado mapeando os riscos — isso é um processo à parte, não um benefício de app. Nunca diga "com isso sua empresa fica em conformidade com a NR-01" ou equivalente — isso é uma afirmação legal falsa. Diga algo como "o Clude Mind é uma peça boa da estratégia de bem-estar, mas a NR-01 exige uma avaliação formal de risco à parte — isso complementa, não substitui". Se a empresa quiser algo mais robusto pra encarar a NR-01 de frente, mencione que o Clude Corporativo e a parceria com a Conexa são opções mais completas nessa frente — e chame oferecer_formulario_contato (motivo: "Clude Saúde / NR-01") assim que a pessoa mostrar interesse.
-- QUALQUER OUTRO produto/parceiro que NÃO esteja na lista de parceiros abaixo: aqui sim, sem confirmação você não sabe se existe. Nunca diga "não temos" nem invente que existe — diga algo como "esse especificamente eu não vejo aqui no Clube, mas pode ser um produto à parte da Flash" e, se a pessoa quiser confirmar, chame oferecer_formulario_contato (motivo: nome do produto perguntado).
+  ATENÇÃO — nunca prometa conformidade: oferecer suporte psicológico (Clude Mind) AJUDA a mitigar risco psicossocial, mas NÃO substitui a avaliação formal e documentada do PGR, que exige profissional qualificado mapeando os riscos — isso é um processo à parte, não um benefício de app. Nunca diga "com isso sua empresa fica em conformidade com a NR-01" ou equivalente — isso é uma afirmação legal falsa. Diga algo como "o Clude Mind é uma peça boa da estratégia de bem-estar, mas a NR-01 exige uma avaliação formal de risco à parte — isso complementa, não substitui". Se a empresa quiser algo mais robusto pra encarar a NR-01 de frente, mencione que o Clude Corporativo e a parceria com a Conexa são opções mais completas nessa frente — e chame oferecer_cta_comercial (motivo: "Clude Saúde / NR-01") na mesma resposta.
+- QUALQUER OUTRO produto/parceiro que NÃO esteja na lista de parceiros abaixo: aqui sim, sem confirmação você não sabe se existe. Nunca diga "não temos" nem invente que existe — diga algo como "esse especificamente eu não vejo aqui no Clube, mas pode ser um produto à parte da Flash" e chame oferecer_cta_comercial (motivo: nome do produto perguntado) na mesma resposta, pra pessoa poder confirmar com o comercial se quiser.
 
 DESCONTO MÉDIO E PARCEIROS POR CATEGORIA (fatos reais, use com precisão):
 {linhas_categorias}
@@ -530,6 +549,8 @@ def chamar_gemini_agente(historico: list) -> dict:
     function_call = next((p["functionCall"] for p in partes if "functionCall" in p), None)
     mostrar_formulario = False
     motivo_formulario = None
+    mostrar_cta = False
+    motivo_cta = None
 
     if function_call:
         nome_funcao = function_call["name"]
@@ -540,6 +561,10 @@ def chamar_gemini_agente(historico: list) -> dict:
                 headcount=int(args.get("headcount", 1)),
                 meses=int(args.get("meses", 12)),
             )
+        elif nome_funcao == "oferecer_cta_comercial":
+            mostrar_cta = True
+            motivo_cta = str(args.get("motivo", "Falar com o comercial"))
+            resultado = {"cta_exibido": True}
         elif nome_funcao == "oferecer_formulario_contato":
             mostrar_formulario = True
             motivo_formulario = str(args.get("motivo", "Falar com o comercial"))
@@ -562,12 +587,18 @@ def chamar_gemini_agente(historico: list) -> dict:
         }
         data2 = post_gemini(payload2).json()
         texto = data2["candidates"][0]["content"]["parts"][0]["text"].strip()
-        return {"texto": texto, "mostrar_formulario": mostrar_formulario, "motivo": motivo_formulario}
+        return {
+            "texto": texto,
+            "mostrar_formulario": mostrar_formulario,
+            "motivo": motivo_formulario,
+            "mostrar_cta": mostrar_cta,
+            "motivo_cta": motivo_cta,
+        }
 
     texto = next((p["text"] for p in partes if "text" in p), None)
     if not texto:
         raise RuntimeError("resposta do Gemini sem texto nem function call")
-    return {"texto": texto.strip(), "mostrar_formulario": False, "motivo": None}
+    return {"texto": texto.strip(), "mostrar_formulario": False, "motivo": None, "mostrar_cta": False, "motivo_cta": None}
 
 
 
@@ -649,6 +680,8 @@ def api_agente():
             "fonte": "gemini",
             "mostrar_formulario": resultado["mostrar_formulario"],
             "motivo_formulario": resultado["motivo"],
+            "mostrar_cta": resultado["mostrar_cta"],
+            "motivo_cta": resultado["motivo_cta"],
         })
     except RateLimitError as e:
         # Não é falha de verdade: só cota cheia em todos os modelos. Devolve um

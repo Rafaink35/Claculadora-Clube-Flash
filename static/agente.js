@@ -21,6 +21,24 @@ function escapeHtml(texto){
   return div.innerHTML;
 }
 
+function renderCtaComercial(motivo){
+  const wrapper = document.createElement('div');
+  wrapper.className = 'msg assistant cta-comercial';
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'cta-comercial-btn';
+  btn.textContent = '📞 Falar com um comercial';
+  wrapper.appendChild(btn);
+  chatMessages.appendChild(wrapper);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+
+  btn.addEventListener('click', () => {
+    btn.disabled = true;
+    wrapper.remove();
+    enviarMensagem(`Quero falar com um comercial sobre ${motivo}`);
+  });
+}
+
 function renderFormularioContato(motivo){
   const wrapper = document.createElement('div');
   wrapper.className = 'msg assistant form-contato';
@@ -122,6 +140,8 @@ async function enviarMensagem(texto){
 
     if (data.mostrar_formulario){
       renderFormularioContato(data.motivo_formulario || 'Falar com o comercial');
+    } else if (data.mostrar_cta){
+      renderCtaComercial(data.motivo_cta || 'Falar com o comercial');
     }
 
     if (data.fonte === 'gemini'){

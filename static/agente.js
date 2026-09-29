@@ -29,6 +29,8 @@ function renderFormularioContato(motivo){
     <input type="text" class="fc-nome" placeholder="Seu nome">
     <input type="email" class="fc-email" placeholder="Seu e-mail">
     <input type="text" class="fc-empresa" placeholder="Empresa (opcional)">
+    <input type="tel" class="fc-telefone" placeholder="Telefone (opcional)">
+    <input type="number" min="1" class="fc-colaboradores" placeholder="Número de colaboradores (opcional)">
     <button type="button" class="fc-enviar">Enviar</button>
     <div class="fc-status"></div>
   `;
@@ -39,6 +41,8 @@ function renderFormularioContato(motivo){
     const nome = wrapper.querySelector('.fc-nome').value.trim();
     const email = wrapper.querySelector('.fc-email').value.trim();
     const empresa = wrapper.querySelector('.fc-empresa').value.trim();
+    const telefone = wrapper.querySelector('.fc-telefone').value.trim();
+    const colaboradores = wrapper.querySelector('.fc-colaboradores').value.trim();
     const status = wrapper.querySelector('.fc-status');
     const btn = wrapper.querySelector('.fc-enviar');
 
@@ -53,7 +57,7 @@ function renderFormularioContato(motivo){
       const res = await fetch('/api/lead-comercial', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ nome, email, empresa, motivo }),
+        body: JSON.stringify({ nome, email, empresa, telefone, colaboradores, motivo }),
       });
       const data = await res.json();
       if (res.ok && data.ok){

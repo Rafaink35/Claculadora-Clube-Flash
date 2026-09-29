@@ -171,4 +171,4 @@ suggestions.querySelectorAll('.suggestion-chip').forEach(chip => {
   chip.addEventListener('click', () => enviarMensagem(chip.dataset.msg));
 });
 
-renderMensagem('assistant', 'E aí! 🦩 Sou o Mingo, do Clube Flash. Bora ver quanto o clube economiza pra sua empresa, ou me joga qualquer dúvida/objeção que eu respondo na hora.');
+renderMensagem('assistant', 'Oi! 🦩 Eu sou o Mingo, do Clube Flash. Tudo bem com você? Antes da gente continuar, qual é o seu nome?');

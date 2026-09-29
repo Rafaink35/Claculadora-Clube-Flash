@@ -19,12 +19,38 @@ import json
 import os
 import re
 import time
+from collections import defaultdict, deque
+from functools import wraps
 from pathlib import Path
 
 import requests
 from flask import Flask, jsonify, render_template, request
 
 app = Flask(__name__)
+
+_rate_limit_buckets = defaultdict(deque)
+
+
+def limite_por_ip(max_requisicoes: int = 12, janela_segundos: int = 60):
+    """Limite simples em memória, por IP — protege endpoints públicos de spam
+    e de custo de API descontrolado. Suficiente pro MVP (1 worker no Render);
+    se escalar pra múltiplos workers, precisa virar algo compartilhado
+    (Redis, etc.) — cada worker teria seu próprio contador."""
+    def decorador(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            ip = request.headers.get("X-Forwarded-For", request.remote_addr or "desconhecido").split(",")[0].strip()
+            agora = time.time()
+            fila = _rate_limit_buckets[ip]
+            while fila and agora - fila[0] > janela_segundos:
+                fila.popleft()
+            if len(fila) >= max_requisicoes:
+                return jsonify({"erro": "Muitas requisições em pouco tempo. Espera um minuto e tenta de novo."}), 429
+            fila.append(agora)
+            return f(*args, **kwargs)
+        return wrapper
+    return decorador
+
 
 DATA_PATH = Path(__file__).parent / "data" / "categorias.json"
 PARCEIROS_PATH = Path(__file__).parent / "data" / "parceiros.json"
@@ -365,6 +391,26 @@ FUNCTION_DECLARATIONS = [{
         },
         "required": ["headcount"],
     },
+}, {
+    "name": "oferecer_formulario_contato",
+    "description": (
+        "Mostra um formulário de contato inline na conversa, pra pessoa deixar nome, "
+        "e-mail e empresa e o time comercial da Flash entrar em contato. Chame esta "
+        "função sempre que o usuário demonstrar interesse claro em falar com o comercial "
+        "— principalmente sobre TotalPass corporativo, Clude Saúde, ou qualquer produto "
+        "que exija contato comercial (não é pra objeções genéricas, só quando a pessoa "
+        "topa ou pede pra ser contatada)."
+    ),
+    "parameters": {
+        "type": "OBJECT",
+        "properties": {
+            "motivo": {
+                "type": "STRING",
+                "description": "Assunto do contato, ex: 'TotalPass corporativo', 'Clude Saúde', 'Calculadora de economia'.",
+            },
+        },
+        "required": ["motivo"],
+    },
 }]
 
 
@@ -431,14 +477,15 @@ LIMITE DA DEFESA — honestidade não é negociável:
 CUIDADO CRÍTICO — o Mapa de Parceiros NÃO é o catálogo completo da Flash:
 - A lista de parceiros abaixo cobre só o Clube B2C. A Flash tem OUTROS produtos e benefícios negociados separadamente com a empresa cliente, fora do Clube.
 - TOTALPASS: existem DUAS coisas diferentes aqui, não confunda:
-  1) TotalPass corporativo (o plano completo, contratado PELA EMPRESA) — isso NÃO é pelo Clube, é direto com o time comercial. É o plano mais robusto: inclui até 3 dependentes por colaborador e rede de academias com maior abrangência que o TP Lite/Pro. Se perguntarem sobre TotalPass corporativo, seja AFIRMATIVO e convide pro próximo passo: "Sim, a Flash tem TotalPass! O plano corporativo é o mais completo — dá pra incluir até 3 dependentes e tem rede de academias bem mais ampla que o plano individual. Fala com o nosso time comercial que eles batem um papo e passam as condições certinho pra sua empresa."
+  1) TotalPass corporativo (o plano completo, contratado PELA EMPRESA) — isso NÃO é pelo Clube, é direto com o time comercial. É o plano mais robusto: inclui até 3 dependentes por colaborador e rede de academias com maior abrangência que o TP Lite/Pro. Se perguntarem sobre TotalPass corporativo, seja AFIRMATIVO: "Sim, a Flash tem TotalPass! O plano corporativo é o mais completo — dá pra incluir até 3 dependentes e tem rede de academias bem mais ampla que o plano individual." Se a pessoa topar saber mais ou pedir contato, chame a função oferecer_formulario_contato (motivo: "TotalPass corporativo") em vez de só falar "fala com o comercial" — isso mostra um formulário ali na conversa.
   2) TP Lite / TP Lite Pro — esses SIM são dentro do ecossistema Flash: existem dois planos (TP Lite e TP Lite Pro, com preços e redes de academia diferentes — o TP Lite custa R$ 69,90/mês, e dá acesso a mais de 6.000 academias e apps de bem-estar como Zen App, Total Play, Nutri+ e Positiv). A contratação é individual (sem dependentes) e acontece pelo próprio app da TotalPass (cadastro por CPF), não precisa que a empresa ofereça TotalPass corporativo — só precisa ter acesso via um parceiro elegível (Flash, Alelo, Ticket, etc.). Se perguntarem "e se minha empresa não tem TotalPass?", é o TP Lite/Pro que resolve — cite com confiança, é produto real.
      ATENÇÃO — nunca recomende isso: TP Lite NÃO é uma versão mais barata do plano corporativo, e ninguém que já tem TotalPass corporativo pela empresa deve cancelar pra migrar pro TP Lite — são públicos diferentes, o cadastro corporativo é vinculado ao CPF + CNPJ da empresa parceira. Se alguém com TotalPass corporativo perguntar sobre economizar ou trocar de plano, oriente a verificar categorias mais baratas (TP1 a TP5+) direto com a própria empresa/TotalPass — nunca sugira migrar pro TP Lite nesse caso.
   Nunca hesite ou trate como incerto — os dois são fatos confirmados.
 - CLUDE SAÚDE: parceria real Flash + Clude, também fora do Mapa de Parceiros do Clube (é assinatura individual, exclusiva pra quem tem cartão Flash, não desconto de marketplace). Seja AFIRMATIVO sobre isso. O que inclui: telemedicina 24h por dia, 7 dias por semana (WhatsApp ou app), pedido de exame e receita direto na consulta por vídeo; consulta com especialista a partir de R$ 45; desconto de até 80% em exames (rede com Sabin, Labi Exames, entre outros); desconto de até 60% em mais de 26.000 farmácias (Drogasil, Droga Raia, Drogaria São Paulo, entre outras); acesso a mais de 50 cirurgias com condições especiais de pagamento e acompanhamento de assistente social; e dois extras — Clude Nutrifit (chat com nutricionista) e Clude Mind (consulta com psicólogo por valor acessível). Tem uma assistente de IA própria (a "Clu") pra acompanhar condição crônica como diabetes e pressão alta.
   Hoje tem uma condição promocional de assinatura (plano individual, valor com desconto) — cite que existe condição especial pro cartão Flash, mas não prometa um valor exato fixo, porque preço promocional pode mudar; se pedirem o valor exato, diga que é melhor confirmar no app, já que é uma promoção por tempo limitado.
   Importante: isso NÃO é seguro nem plano de saúde — é telemedicina e desconto em rede credenciada. Se alguém perguntar se é plano de saúde, corrija com clareza.
-- QUALQUER OUTRO produto/parceiro que NÃO esteja na lista de parceiros abaixo: aqui sim, sem confirmação você não sabe se existe. Nunca diga "não temos" nem invente que existe — diga algo como "esse especificamente eu não vejo aqui no Clube, mas pode ser um produto à parte da Flash — vale confirmar com o nosso comercial" e direcione pro time comercial.
+  Se a pessoa topar saber mais ou pedir contato, chame oferecer_formulario_contato (motivo: "Clude Saúde").
+- QUALQUER OUTRO produto/parceiro que NÃO esteja na lista de parceiros abaixo: aqui sim, sem confirmação você não sabe se existe. Nunca diga "não temos" nem invente que existe — diga algo como "esse especificamente eu não vejo aqui no Clube, mas pode ser um produto à parte da Flash" e, se a pessoa quiser confirmar, chame oferecer_formulario_contato (motivo: nome do produto perguntado).
 
 DESCONTO MÉDIO E PARCEIROS POR CATEGORIA (fatos reais, use com precisão):
 {linhas_categorias}
@@ -457,7 +504,7 @@ def montar_contents_gemini(historico: list) -> list:
     return contents
 
 
-def chamar_gemini_agente(historico: list) -> str:
+def chamar_gemini_agente(historico: list) -> dict:
     if not GEMINI_API_KEY:
         raise RuntimeError("GEMINI_API_KEY não configurada")
 
@@ -473,6 +520,8 @@ def chamar_gemini_agente(historico: list) -> str:
     partes = data["candidates"][0]["content"]["parts"]
 
     function_call = next((p["functionCall"] for p in partes if "functionCall" in p), None)
+    mostrar_formulario = False
+    motivo_formulario = None
 
     if function_call:
         nome_funcao = function_call["name"]
@@ -483,6 +532,10 @@ def chamar_gemini_agente(historico: list) -> str:
                 headcount=int(args.get("headcount", 1)),
                 meses=int(args.get("meses", 12)),
             )
+        elif nome_funcao == "oferecer_formulario_contato":
+            mostrar_formulario = True
+            motivo_formulario = str(args.get("motivo", "Falar com o comercial"))
+            resultado = {"formulario_exibido": True}
         else:
             resultado = {"erro": f"função desconhecida: {nome_funcao}"}
 
@@ -500,19 +553,35 @@ def chamar_gemini_agente(historico: list) -> str:
             "generationConfig": {"temperature": 0.85, "maxOutputTokens": 400},
         }
         data2 = post_gemini(payload2).json()
-        return data2["candidates"][0]["content"]["parts"][0]["text"].strip()
+        texto = data2["candidates"][0]["content"]["parts"][0]["text"].strip()
+        return {"texto": texto, "mostrar_formulario": mostrar_formulario, "motivo": motivo_formulario}
 
     texto = next((p["text"] for p in partes if "text" in p), None)
     if not texto:
         raise RuntimeError("resposta do Gemini sem texto nem function call")
-    return texto.strip()
+    return {"texto": texto.strip(), "mostrar_formulario": False, "motivo": None}
 
 
 
 
 
-N8N_WEBHOOK_URL = os.environ.get("N8N_WEBHOOK_URL")
+SLACK_WEBHOOK_URL = os.environ.get("SLACK_WEBHOOK_URL")
 LEADS_LOG_PATH = Path(__file__).parent / "data" / "leads_log.jsonl"
+
+
+def enviar_para_slack(texto: str) -> bool:
+    """Posta direto no Incoming Webhook do Slack — recurso nativo do Slack,
+    sem n8n nem nenhuma ferramenta terceira no meio (proibido pelo time de
+    segurança). Retorna True se enviou, False se falhou ou não configurado."""
+    if not SLACK_WEBHOOK_URL:
+        return False
+    try:
+        resp = requests.post(SLACK_WEBHOOK_URL, json={"text": texto}, timeout=10)
+        return resp.ok
+    except Exception as e:
+        print(f"[ERRO Slack] {type(e).__name__}: {e}", flush=True)
+        return False
+
 
 
 @app.route("/")
@@ -531,6 +600,7 @@ def api_categorias():
 
 
 @app.route("/api/gerar-narrativa", methods=["POST"])
+@limite_por_ip(max_requisicoes=15, janela_segundos=60)
 def api_gerar_narrativa():
     dados = request.get_json(force=True, silent=True) or {}
 
@@ -556,6 +626,7 @@ def agente():
 
 
 @app.route("/api/agente", methods=["POST"])
+@limite_por_ip(max_requisicoes=15, janela_segundos=60)
 def api_agente():
     dados = request.get_json(force=True, silent=True) or {}
     historico = dados.get("historico", [])
@@ -564,8 +635,13 @@ def api_agente():
         return jsonify({"erro": "histórico vazio"}), 400
 
     try:
-        resposta = chamar_gemini_agente(historico)
-        return jsonify({"resposta": resposta, "fonte": "gemini"})
+        resultado = chamar_gemini_agente(historico)
+        return jsonify({
+            "resposta": resultado["texto"],
+            "fonte": "gemini",
+            "mostrar_formulario": resultado["mostrar_formulario"],
+            "motivo_formulario": resultado["motivo"],
+        })
     except RateLimitError as e:
         # Não é falha de verdade: só cota cheia em todos os modelos. Devolve um
         # sinal estruturado pro front-end esperar e tentar de novo sozinho.
@@ -589,6 +665,7 @@ def api_agente():
 
 
 @app.route("/api/lead", methods=["POST"])
+@limite_por_ip(max_requisicoes=6, janela_segundos=60)
 def api_lead():
     dados = request.get_json(force=True, silent=True) or {}
 
@@ -608,17 +685,54 @@ def api_lead():
     except Exception:
         pass
 
-    enviado_n8n = False
-    erro_n8n = None
-    if N8N_WEBHOOK_URL:
-        try:
-            resp = requests.post(N8N_WEBHOOK_URL, json=dados, timeout=10)
-            resp.raise_for_status()
-            enviado_n8n = True
-        except Exception as e:
-            erro_n8n = str(e)
+    texto_slack = (
+        f":inbox_tray: *Novo lead via LP*\n"
+        f"*Nome:* {dados.get('nome', '')}\n"
+        f"*E-mail:* {dados.get('email', '')}\n"
+        f"*Empresa:* {dados.get('empresa', '')}\n"
+        f"*Cargo:* {dados.get('cargo') or 'não informado'}\n"
+        f"*Colaboradores:* {dados.get('headcount') or 'não informado'}"
+    )
+    enviado = enviar_para_slack(texto_slack)
 
-    return jsonify({"ok": True, "enviado_n8n": enviado_n8n, "erro_n8n": erro_n8n})
+    return jsonify({"ok": True, "enviado_slack": enviado})
+
+
+@app.route("/api/lead-comercial", methods=["POST"])
+@limite_por_ip(max_requisicoes=6, janela_segundos=60)
+def api_lead_comercial():
+    """Recebe o formulário mostrado dentro do chat do Mingo (quando o usuário
+    topa falar com o comercial) e manda direto pro Slack via Incoming Webhook
+    — sem n8n, conforme a política de segurança."""
+    dados = request.get_json(force=True, silent=True) or {}
+
+    obrigatorios = ["nome", "email"]
+    faltando = [c for c in obrigatorios if not dados.get(c)]
+    if faltando:
+        return jsonify({"erro": f"campos faltando: {', '.join(faltando)}"}), 400
+
+    nome = dados.get("nome", "")
+    email = dados.get("email", "")
+    empresa = dados.get("empresa") or "não informado"
+    motivo = dados.get("motivo") or "Contato via Mingo"
+
+    dados["origem"] = "agente_mingo"
+    try:
+        with open(LEADS_LOG_PATH, "a", encoding="utf-8") as f:
+            f.write(json.dumps(dados, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
+
+    texto_slack = (
+        f":robot_face: *Novo contato via Mingo (agente)*\n"
+        f"*Motivo:* {motivo}\n"
+        f"*Nome:* {nome}\n"
+        f"*E-mail:* {email}\n"
+        f"*Empresa:* {empresa}"
+    )
+    enviado = enviar_para_slack(texto_slack)
+
+    return jsonify({"ok": True, "enviado_slack": enviado})
 
 
 if __name__ == "__main__":

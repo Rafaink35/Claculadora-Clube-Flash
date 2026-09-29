@@ -4,6 +4,12 @@ let ultimoCalculo = {};
 
 const rampColors = ['#A60058','#E6007C','#FE2B8F','#FF6D94','#FF9ABD','#FFC2D0','#FFB3C7','#FFD6E1','#FFECF2'];
 
+function escapeHtml(texto){
+  const div = document.createElement('div');
+  div.textContent = String(texto ?? '');
+  return div.innerHTML;
+}
+
 function fmtBRL(v){
   return v.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
 }
@@ -15,8 +21,8 @@ function buildTable(){
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>
-        <span class="cat-name">${cat.nome}</span>
-        <span class="cat-partners">${cat.parceiros} parceiros ativos · ${cat.fonte_uso || 'estimativa'}</span>
+        <span class="cat-name">${escapeHtml(cat.nome)}</span>
+        <span class="cat-partners">${cat.parceiros} parceiros ativos · ${escapeHtml(cat.fonte_uso || 'estimativa')}</span>
       </td>
       <td class="fixed-pct">${cat.desconto.toFixed(1).replace('.', ',')}%</td>
       <td><input type="number" min="0" step="0.5" value="${cat.freq}" data-id="${cat.id}" data-field="freq"></td>
@@ -77,7 +83,7 @@ function recalc(){
     row.className = 'bar-row';
     row.innerHTML = `
       <div class="bar-labels">
-        <span class="name">${cat.nome}</span>
+        <span class="name">${escapeHtml(cat.nome)}</span>
         <span class="val">${fmtBRL(cat.econMes)}/mês · ${pct.toFixed(0)}%</span>
       </div>
       <div class="bar-track">
@@ -90,7 +96,7 @@ function recalc(){
   const top = sorted[0];
   const topPct = totalMes > 0 ? Number((top.econMes / totalMes * 100).toFixed(0)) : 0;
   const narrative =
-    `Cada colaborador de <b>${companyName}</b> economizou em média ${fmtBRL(totalMes)} por mês usando o Clube Flash. ` +
+    `Cada colaborador de <b>${escapeHtml(companyName)}</b> economizou em média ${fmtBRL(totalMes)} por mês usando o Clube Flash. ` +
     `Ao longo de ${months} ${months === 1 ? 'mês' : 'meses'}, isso soma ${fmtBRL(individualPeriodo)} por colaborador — e ${fmtBRL(agregadoPeriodo)} devolvidos ao total de ${headcount.toLocaleString('pt-BR')} colaboradores da empresa. ` +
     `A categoria que mais gerou economia foi ${top.nome}, respondendo por ${topPct}% do valor total — o equivalente a ${pctSalario.toFixed(1).replace('.', ',')}% do salário médio mensal, todo mês.`;
   document.getElementById('narrativeText').innerHTML = narrative;
@@ -161,7 +167,7 @@ async function init(){
       });
       const data = await res.json();
       if (data.narrativa) {
-        document.getElementById('narrativeText').innerHTML = data.narrativa;
+        document.getElementById('narrativeText').textContent = data.narrativa;
         document.getElementById('narrativeFonte').textContent =
           data.fonte === 'gemini'
             ? '✨ Gerado por IA (Gemini)'

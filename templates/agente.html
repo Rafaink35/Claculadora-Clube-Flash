@@ -46,6 +46,36 @@
     color:var(--ink);
     border-bottom-left-radius:4px;
   }
+  .form-contato{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    max-width:88%;
+  }
+  .form-contato-titulo{ font-size:13.5px; margin-bottom:4px; }
+  .form-contato input{
+    padding:9px 11px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:var(--input-bg);
+    color:var(--ink);
+    font-family:"Nunito Sans", sans-serif;
+    font-size:13.5px;
+  }
+  .form-contato button{
+    border:none;
+    background:var(--rosa);
+    color:#fff;
+    font-family:"Nunito Sans", sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    padding:9px;
+    border-radius:8px;
+    cursor:pointer;
+  }
+  .form-contato button:disabled{ opacity:0.6; cursor:default; }
+  .fc-status{ font-size:12px; color:var(--ink-soft); min-height:14px; }
+
   .msg.thinking{
     align-self:flex-start;
     background:var(--paper-tint);

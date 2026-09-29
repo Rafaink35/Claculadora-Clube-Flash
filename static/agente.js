@@ -15,6 +15,61 @@ function renderMensagem(role, texto, thinking = false){
   return div;
 }
 
+function escapeHtml(texto){
+  const div = document.createElement('div');
+  div.textContent = String(texto ?? '');
+  return div.innerHTML;
+}
+
+function renderFormularioContato(motivo){
+  const wrapper = document.createElement('div');
+  wrapper.className = 'msg assistant form-contato';
+  wrapper.innerHTML = `
+    <div class="form-contato-titulo">Deixa seus dados que o comercial te procura sobre: <b>${escapeHtml(motivo)}</b></div>
+    <input type="text" class="fc-nome" placeholder="Seu nome">
+    <input type="email" class="fc-email" placeholder="Seu e-mail">
+    <input type="text" class="fc-empresa" placeholder="Empresa (opcional)">
+    <button type="button" class="fc-enviar">Enviar</button>
+    <div class="fc-status"></div>
+  `;
+  chatMessages.appendChild(wrapper);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+
+  wrapper.querySelector('.fc-enviar').addEventListener('click', async () => {
+    const nome = wrapper.querySelector('.fc-nome').value.trim();
+    const email = wrapper.querySelector('.fc-email').value.trim();
+    const empresa = wrapper.querySelector('.fc-empresa').value.trim();
+    const status = wrapper.querySelector('.fc-status');
+    const btn = wrapper.querySelector('.fc-enviar');
+
+    if (!nome || !email){
+      status.textContent = 'Preenche nome e e-mail pelo menos :)';
+      return;
+    }
+
+    btn.disabled = true;
+    status.textContent = 'Enviando...';
+    try {
+      const res = await fetch('/api/lead-comercial', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ nome, email, empresa, motivo }),
+      });
+      const data = await res.json();
+      if (res.ok && data.ok){
+        status.textContent = 'Recebido! Nosso comercial vai te procurar em breve.';
+        wrapper.querySelectorAll('input, button').forEach(el => el.disabled = true);
+      } else {
+        status.textContent = 'Não consegui enviar agora, tenta de novo.';
+        btn.disabled = false;
+      }
+    } catch (err) {
+      status.textContent = 'Erro de conexão. Tenta de novo.';
+      btn.disabled = false;
+    }
+  });
+}
+
 const MAX_TENTATIVAS_AUTOMATICAS = 3;
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -60,6 +115,10 @@ async function enviarMensagem(texto){
     const data = await pedirRespostaAoAgente(thinkingEl);
     thinkingEl.remove();
     renderMensagem('assistant', data.resposta || 'Não consegui responder agora.');
+
+    if (data.mostrar_formulario){
+      renderFormularioContato(data.motivo_formulario || 'Falar com o comercial');
+    }
 
     if (data.fonte === 'gemini'){
       historico.push({ role: 'assistant', text: data.resposta });

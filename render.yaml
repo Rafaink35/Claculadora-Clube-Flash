@@ -10,7 +10,7 @@ services:
         value: 3.11.9
       - key: GEMINI_API_KEY
         sync: false
-      - key: N8N_WEBHOOK_URL
+      - key: SLACK_WEBHOOK_URL
         sync: false
       - key: GOOGLE_SERVICE_ACCOUNT_JSON
         sync: false

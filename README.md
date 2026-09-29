@@ -41,18 +41,25 @@ agente (`/agente`). O formulário envia o lead para `/api/lead`, que:
 1. Salva uma cópia local em `data/leads_log.jsonl` (rede de segurança —
    **não confie só nisso**: no Render, o disco não é persistente entre
    deploys/restarts)
-2. Repassa o lead para o webhook do n8n (`N8N_WEBHOOK_URL`), que já está
-   conectado ao Slack e ao Google Sheets
+2. Manda direto pro Slack via Incoming Webhook (`SLACK_WEBHOOK_URL`) —
+   **nunca use n8n neste projeto**, é proibido pelo time de segurança da Flash
 
-Configure `N8N_WEBHOOK_URL` com a URL do node Webhook do seu workflow n8n
-(a mesma que você já usa no fluxo Webhook → Slack). Sem essa variável
-configurada, o lead ainda é salvo localmente, só não dispara o Slack/Sheets.
+Configure `SLACK_WEBHOOK_URL` com a URL de um Incoming Webhook do Slack
+(Slack → seu workspace → Apps → Incoming Webhooks → escolhe o canal → copia
+a URL). Sem essa variável configurada, o lead ainda é salvo localmente, só
+não dispara o Slack.
 
 ## Agente (`/agente`)
 
 Chat com function calling: quando o usuário menciona um número de
 colaboradores, o Gemini chama `calcular_economia()` no backend em vez de
 estimar de cabeça — a matemática sempre vem do servidor, nunca do modelo.
+
+Quando o usuário demonstra interesse em falar com o comercial (sobre
+TotalPass corporativo, Clude Saúde, ou qualquer produto fora do Clube), o
+Gemini chama `oferecer_formulario_contato`, que mostra um formulário inline
+na própria conversa. Ao enviar, isso bate em `/api/lead-comercial`, que
+manda pro Slack via `SLACK_WEBHOOK_URL` — mesma regra: nunca n8n.
 
 ## Base de parceiros: planilha do time de parcerias
 

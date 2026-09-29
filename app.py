@@ -584,7 +584,9 @@ def chamar_gemini_agente(historico: list) -> dict:
         # formular a resposta em linguagem natural em cima do número correto.
         contents.append({"role": "model", "parts": [{"functionCall": function_call}]})
         contents.append({
-            "role": "function",
+            # Modelos mais novos (ex: gemini-3.5-flash-lite) rejeitam role "function"
+            # com 400 INVALID_ARGUMENT — a resposta da função vai em "user" agora.
+            "role": "user",
             "parts": [{"functionResponse": {"name": nome_funcao, "response": resultado}}],
         })
         payload2 = {

@@ -669,6 +669,88 @@ def api_gerar_narrativa():
         return jsonify({"narrativa": narrativa, "fonte": "template", "aviso": str(e)})
 
 
+def resposta_rapida(mensagem: str) -> dict | None:
+    """Perguntas de altíssima frequência que já têm resposta 100% definida na
+    base de conhecimento — respondidas na hora, SEM chamar o Gemini. Isso tira
+    essas perguntas da dependência de API externa (rate limit, modelo fora do
+    ar, etc.) e resolve exatamente o problema de "isso não devia precisar de
+    IA". Qualquer coisa fora desses padrões cai pro Mingo (IA) normal.
+    Retorna None se nada bateu, pra seguir o fluxo normal com o Gemini."""
+    m = mensagem.lower().strip()
+
+    # Confirmação de CTA (mensagem sempre gerada pelo nosso próprio botão,
+    # nunca digitada livre — pode casar por padrão fixo com segurança)
+    prefixo_cta = "quero falar com um comercial sobre"
+    if m.startswith(prefixo_cta):
+        motivo = mensagem[len(prefixo_cta):].strip(" :")  or "Falar com o comercial"
+        texto = f"Show! Deixa seus dados aqui embaixo que o comercial entra em contato sobre {motivo}."
+        return {"texto": texto, "mostrar_formulario": True, "motivo": motivo, "mostrar_cta": False, "motivo_cta": None}
+
+    # TotalPass
+    if "totalpass" in m or "total pass" in m:
+        texto = (
+            "Se for o TotalPass corporativo, que é o plano mais completo, com direito a "
+            "incluir até 3 dependentes e uma rede de academias bem mais ampla, ele é "
+            "contratado direto com o nosso time comercial. Mas se sua empresa não quiser "
+            "contratar o TotalPass corporativo, o colaborador pode contratar diretamente "
+            "no Clube Flash o TP Lite e o TP Lite Pro. O TP Lite, por exemplo, custa "
+            "R$ 69,90 por mês e dá acesso a mais de 6.000 academias e apps de bem-estar. "
+            "A contratação é individual, direto pelo app da TotalPass, só precisa ter o "
+            "cartão Flash."
+        )
+        return {"texto": texto, "mostrar_formulario": False, "motivo": None, "mostrar_cta": True, "motivo_cta": "TotalPass corporativo"}
+
+    # NR-01 / risco psicossocial / psicologia
+    if any(p in m for p in ["nr01", "nr-01", "nr 01", "psicossocial"]) or "psicolog" in m:
+        texto = (
+            "A Flash tem sim suporte pra saúde mental: é o Clude Mind, dentro do Clude "
+            "Saúde — consulta por vídeo com psicólogo por um valor acessível, e chat com "
+            "equipe de psicólogos de segunda a sexta, das 8h às 20h. Isso ajuda bastante a "
+            "mitigar os riscos psicossociais que a NR-01 pede pra cuidar, mas é importante "
+            "lembrar que a NR-01 exige uma avaliação formal de risco que é um processo à "
+            "parte. Se a sua empresa precisar de algo mais robusto pra NR-01, temos o Clude "
+            "Corporativo e uma parceria com a Conexa, que são soluções mais completas."
+        )
+        return {"texto": texto, "mostrar_formulario": False, "motivo": None, "mostrar_cta": True, "motivo_cta": "Clude Saúde / NR-01"}
+
+    # Clude Saúde (sem já ser sobre NR-01/psicologia, tratado acima)
+    if "clude" in m and ("saude" in m or "saúde" in m):
+        texto = (
+            "Sim, a Flash tem o Clude Saúde! É telemedicina 24h por dia, 7 dias por "
+            "semana, consulta com especialista a partir de R$ 45, desconto de até 80% em "
+            "exames e até 60% em mais de 26.000 farmácias, e ainda dá acesso a mais de 50 "
+            "cirurgias com condições especiais. Não é seguro nem plano de saúde — é "
+            "telemedicina e desconto em rede credenciada, contratado individualmente por "
+            "quem tem cartão Flash."
+        )
+        return {"texto": texto, "mostrar_formulario": False, "motivo": None, "mostrar_cta": True, "motivo_cta": "Clude Saúde"}
+
+    # Total de parceiros do Clube
+    if re.search(r'quant[oa]s?\s+parceir', m):
+        total = sum(c["parceiros"] for c in carregar_categorias())
+        texto = f"O Clube Flash tem {total} parceiros ativos agora, espalhados por 9 categorias — de alimentação e mobilidade a educação e bem-estar."
+        return {"texto": texto, "mostrar_formulario": False, "motivo": None, "mostrar_cta": False, "motivo_cta": None}
+
+    # Cálculo de economia por número de colaboradores (só se não caiu em nenhum
+    # produto específico acima — "colaboradores" é palavra genérica demais
+    # pra checar primeiro)
+    match_headcount = re.search(r'(\d{1,6})\s*colaborador', m)
+    if match_headcount and any(p in m for p in ["econom", "quanto"]):
+        headcount = int(match_headcount.group(1))
+        meses_match = re.search(r'(\d{1,2})\s*mes', m)
+        meses = int(meses_match.group(1)) if meses_match else 12
+        r = calcular_economia(headcount=headcount, meses=meses)
+        texto = (
+            f"Com {headcount} colaboradores, em {meses} meses a economia agregada da "
+            f"empresa fica em torno de {formatar_brl(r['economia_agregada_da_empresa_no_periodo'])}, "
+            f"considerando {formatar_brl(r['economia_individual_no_periodo'])} por colaborador no "
+            f"período. A categoria que mais pesa nisso é {r['categoria_com_maior_economia']}."
+        )
+        return {"texto": texto, "mostrar_formulario": False, "motivo": None, "mostrar_cta": False, "motivo_cta": None}
+
+    return None
+
+
 @app.route("/agente")
 def agente():
     return render_template("agente.html")
@@ -682,6 +764,19 @@ def api_agente():
 
     if not historico:
         return jsonify({"erro": "histórico vazio"}), 400
+
+    ultima_mensagem = historico[-1]
+    if ultima_mensagem.get("role") == "user":
+        rapida = resposta_rapida(ultima_mensagem.get("text", ""))
+        if rapida:
+            return jsonify({
+                "resposta": rapida["texto"],
+                "fonte": "base_conhecimento",
+                "mostrar_formulario": rapida["mostrar_formulario"],
+                "motivo_formulario": rapida["motivo"],
+                "mostrar_cta": rapida["mostrar_cta"],
+                "motivo_cta": rapida["motivo_cta"],
+            })
 
     try:
         resultado = chamar_gemini_agente(historico)

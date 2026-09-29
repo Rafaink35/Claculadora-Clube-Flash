@@ -144,7 +144,7 @@ async function enviarMensagem(texto){
       renderCtaComercial(data.motivo_cta || 'Falar com o comercial');
     }
 
-    if (data.fonte === 'gemini'){
+    if (data.fonte === 'gemini' || data.fonte === 'base_conhecimento'){
       historico.push({ role: 'assistant', text: data.resposta });
     } else {
       // Mensagem de erro não entra no histórico (o modelo leria como fala dele),

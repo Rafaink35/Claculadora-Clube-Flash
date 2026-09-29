@@ -173,9 +173,17 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 # Lista de modelos em ordem de preferência. Cada modelo tem a SUA PRÓPRIA cota
 # gratuita (por projeto, por modelo) — então, se o primeiro estourar, o
 # backend tenta o próximo na hora, sem dormir e sem travar o worker.
+#
+# ATENÇÃO: nomes de modelo Gemini mudam com frequência (o Google aposenta
+# modelo antigo e lança substituto em poucos meses). Se aparecer erro 404
+# "model is no longer available" no log, o próprio erro do Google já diz
+# qual o nome novo — troca aqui, ou direto na variável de ambiente
+# GEMINI_MODELS no Render (não precisa mexer no código pra isso).
+# Última atualização: 29/09/2026 — gemini-2.5-flash-lite parou de aceitar
+# conta nova, Google recomendou gemini-3.5-flash-lite no lugar.
 GEMINI_MODELS = [
     m.strip()
-    for m in os.environ.get("GEMINI_MODELS", "gemini-2.5-flash,gemini-2.5-flash-lite").split(",")
+    for m in os.environ.get("GEMINI_MODELS", "gemini-2.5-flash,gemini-3.5-flash-lite").split(",")
     if m.strip()
 ]
 

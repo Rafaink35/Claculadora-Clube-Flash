@@ -90,6 +90,41 @@ mantida pelo time de parcerias — sem precisar de deploy pra atualizar.
 do time de parcerias leva até esse tempo pra refletir no Mingo, sem
 precisar reiniciar nada.
 
+## Base de "respostas prontas": aba "Produtos" (mesma planilha)
+
+Perguntas de altíssima frequência (TotalPass, NR-01, Clude Saúde, etc.)
+respondem na hora, **sem chamar o Gemini** — mais rápido e imune a rate
+limit. Essas respostas vêm de uma segunda aba, chamada **"Produtos"**, na
+mesma planilha do time de parcerias (não é uma planilha nova).
+
+**Estrutura da aba "Produtos"** (primeira linha como cabeçalho):
+
+| nome | gatilhos | resposta | motivo_cta |
+|---|---|---|---|
+
+- `nome`: só identificação, não afeta a resposta (ex: "TotalPass")
+- `gatilhos`: palavras separadas por vírgula que disparam essa resposta se
+  aparecerem na pergunta (ex: `totalpass, total pass`) — case-insensitive
+- `resposta`: o texto que o Mingo manda, palavra por palavra
+- `motivo_cta`: se preenchido, mostra o botão "Falar com um comercial"
+  depois da resposta (ex: "TotalPass corporativo"); deixe em branco se a
+  resposta não precisa de CTA (ex: "quantos parceiros vocês têm")
+
+**Pra adicionar um produto novo** (ex: Conexa), é só adicionar uma linha
+nova nessa aba — não precisa de deploy, nem de mim. Recarrega em até 5
+minutos (mesmo cache).
+
+**Importante — o que essa aba NÃO cobre:** as instruções de comportamento
+do Mingo (tom de voz, quando ele deve admitir uma falha, os cuidados legais
+como "nunca prometa conformidade com a NR-01") continuam no código — essas
+exigem entender a nuance por trás de cada regra, então ainda passam por
+mim/um dev. A aba "Produtos" só cobre o conteúdo factual das respostas
+rápidas.
+
+**Fallback:** sem a aba configurada ou se a leitura falhar, usa
+`data/produtos_especiais.json` (mesmos três produtos de hoje: TotalPass,
+NR-01, Clude Saúde) — nunca fica sem responder.
+
 **Fallback:** se a planilha não estiver configurada, ou a leitura falhar
 por qualquer motivo (credencial errada, planilha não compartilhada, etc.),
 o app cai automaticamente para `data/parceiros.json` + `data/categorias.json`

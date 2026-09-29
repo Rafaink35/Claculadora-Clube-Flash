@@ -1,0 +1,20 @@
+[
+  {
+    "nome": "TotalPass",
+    "gatilhos": "totalpass, total pass",
+    "resposta": "Se for o TotalPass corporativo, que é o plano mais completo, com direito a incluir até 3 dependentes e uma rede de academias bem mais ampla, ele é contratado direto com o nosso time comercial. Mas se sua empresa não quiser contratar o TotalPass corporativo, o colaborador pode contratar diretamente no Clube Flash o TP Lite e o TP Lite Pro. O TP Lite, por exemplo, custa R$ 69,90 por mês e dá acesso a mais de 6.000 academias e apps de bem-estar. A contratação é individual, direto pelo app da TotalPass, só precisa ter o cartão Flash.",
+    "motivo_cta": "TotalPass corporativo"
+  },
+  {
+    "nome": "NR-01 / Psicologia",
+    "gatilhos": "nr01, nr-01, nr 01, psicossocial, psicolog",
+    "resposta": "A Flash tem sim suporte pra saúde mental: é o Clude Mind, dentro do Clude Saúde — consulta por vídeo com psicólogo por um valor acessível, e chat com equipe de psicólogos de segunda a sexta, das 8h às 20h. Isso ajuda bastante a mitigar os riscos psicossociais que a NR-01 pede pra cuidar, mas é importante lembrar que a NR-01 exige uma avaliação formal de risco que é um processo à parte. Se a sua empresa precisar de algo mais robusto pra NR-01, temos o Clude Corporativo e uma parceria com a Conexa, que são soluções mais completas.",
+    "motivo_cta": "Clude Saúde / NR-01"
+  },
+  {
+    "nome": "Clude Saúde",
+    "gatilhos": "clude saude, clude saúde",
+    "resposta": "Sim, a Flash tem o Clude Saúde! É telemedicina 24h por dia, 7 dias por semana, consulta com especialista a partir de R$ 45, desconto de até 80% em exames e até 60% em mais de 26.000 farmácias, e ainda dá acesso a mais de 50 cirurgias com condições especiais. Não é seguro nem plano de saúde — é telemedicina e desconto em rede credenciada, contratado individualmente por quem tem cartão Flash.",
+    "motivo_cta": "Clude Saúde"
+  }
+]

@@ -169,6 +169,62 @@ def buscar_parceiros_brutos(forcar: bool = False) -> list[dict]:
     return dados
 
 
+PRODUTOS_ESPECIAIS_PATH = Path(__file__).parent / "data" / "produtos_especiais.json"
+_cache_produtos_especiais = {"dados": None, "buscado_em": 0}
+
+
+def _buscar_produtos_da_planilha_google() -> list[dict]:
+    """Lê a aba 'Produtos' da MESMA planilha do time de parcerias — segunda
+    aba, não segunda planilha. Colunas esperadas: nome, gatilhos (separados
+    por vírgula), resposta, motivo_cta."""
+    if not GOOGLE_SERVICE_ACCOUNT_JSON or not PARCEIROS_SHEET_ID:
+        raise RuntimeError("GOOGLE_SERVICE_ACCOUNT_JSON ou PARCEIROS_SHEET_ID não configurados")
+
+    import gspread
+    from google.oauth2.service_account import Credentials
+
+    credenciais_dict = json.loads(GOOGLE_SERVICE_ACCOUNT_JSON)
+    escopos = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
+    creds = Credentials.from_service_account_info(credenciais_dict, scopes=escopos)
+    cliente = gspread.authorize(creds)
+    planilha = cliente.open_by_key(PARCEIROS_SHEET_ID).worksheet("Produtos")
+    linhas = planilha.get_all_records()
+
+    produtos = []
+    for linha in linhas:
+        nome = str(linha.get("nome", "")).strip()
+        gatilhos = str(linha.get("gatilhos", "")).strip()
+        resposta = str(linha.get("resposta", "")).strip()
+        motivo_cta = str(linha.get("motivo_cta", "")).strip() or None
+        if not nome or not gatilhos or not resposta:
+            continue
+        produtos.append({"nome": nome, "gatilhos": gatilhos, "resposta": resposta, "motivo_cta": motivo_cta})
+
+    if not produtos:
+        raise RuntimeError("aba 'Produtos' respondeu mas não trouxe nenhuma linha válida")
+    return produtos
+
+
+def buscar_produtos_especiais(forcar: bool = False) -> list[dict]:
+    """Mesma lógica de cache/fallback do buscar_parceiros_brutos, mas pra aba
+    'Produtos' — as respostas prontas (TotalPass, NR-01, Clude Saúde, etc.)
+    que o resposta_rapida() usa."""
+    agora = time.time()
+    if not forcar and _cache_produtos_especiais["dados"] is not None:
+        if agora - _cache_produtos_especiais["buscado_em"] < CACHE_TTL_SEGUNDOS:
+            return _cache_produtos_especiais["dados"]
+
+    try:
+        dados = _buscar_produtos_da_planilha_google()
+    except Exception as e:
+        print(f"[AVISO] Não deu pra ler a aba 'Produtos' da planilha ({e}); usando arquivo local.", flush=True)
+        with open(PRODUTOS_ESPECIAIS_PATH, encoding="utf-8") as f:
+            dados = json.load(f)
+
+    _cache_produtos_especiais.update({"dados": dados, "buscado_em": agora})
+    return dados
+
+
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 # Lista de modelos em ordem de preferência. Cada modelo tem a SUA PRÓPRIA cota
 # gratuita (por projeto, por modelo) — então, se o primeiro estourar, o
@@ -686,44 +742,18 @@ def resposta_rapida(mensagem: str) -> dict | None:
         texto = f"Show! Deixa seus dados aqui embaixo que o comercial entra em contato sobre {motivo}."
         return {"texto": texto, "mostrar_formulario": True, "motivo": motivo, "mostrar_cta": False, "motivo_cta": None}
 
-    # TotalPass
-    if "totalpass" in m or "total pass" in m:
-        texto = (
-            "Se for o TotalPass corporativo, que é o plano mais completo, com direito a "
-            "incluir até 3 dependentes e uma rede de academias bem mais ampla, ele é "
-            "contratado direto com o nosso time comercial. Mas se sua empresa não quiser "
-            "contratar o TotalPass corporativo, o colaborador pode contratar diretamente "
-            "no Clube Flash o TP Lite e o TP Lite Pro. O TP Lite, por exemplo, custa "
-            "R$ 69,90 por mês e dá acesso a mais de 6.000 academias e apps de bem-estar. "
-            "A contratação é individual, direto pelo app da TotalPass, só precisa ter o "
-            "cartão Flash."
-        )
-        return {"texto": texto, "mostrar_formulario": False, "motivo": None, "mostrar_cta": True, "motivo_cta": "TotalPass corporativo"}
-
-    # NR-01 / risco psicossocial / psicologia
-    if any(p in m for p in ["nr01", "nr-01", "nr 01", "psicossocial"]) or "psicolog" in m:
-        texto = (
-            "A Flash tem sim suporte pra saúde mental: é o Clude Mind, dentro do Clude "
-            "Saúde — consulta por vídeo com psicólogo por um valor acessível, e chat com "
-            "equipe de psicólogos de segunda a sexta, das 8h às 20h. Isso ajuda bastante a "
-            "mitigar os riscos psicossociais que a NR-01 pede pra cuidar, mas é importante "
-            "lembrar que a NR-01 exige uma avaliação formal de risco que é um processo à "
-            "parte. Se a sua empresa precisar de algo mais robusto pra NR-01, temos o Clude "
-            "Corporativo e uma parceria com a Conexa, que são soluções mais completas."
-        )
-        return {"texto": texto, "mostrar_formulario": False, "motivo": None, "mostrar_cta": True, "motivo_cta": "Clude Saúde / NR-01"}
-
-    # Clude Saúde (sem já ser sobre NR-01/psicologia, tratado acima)
-    if "clude" in m and ("saude" in m or "saúde" in m):
-        texto = (
-            "Sim, a Flash tem o Clude Saúde! É telemedicina 24h por dia, 7 dias por "
-            "semana, consulta com especialista a partir de R$ 45, desconto de até 80% em "
-            "exames e até 60% em mais de 26.000 farmácias, e ainda dá acesso a mais de 50 "
-            "cirurgias com condições especiais. Não é seguro nem plano de saúde — é "
-            "telemedicina e desconto em rede credenciada, contratado individualmente por "
-            "quem tem cartão Flash."
-        )
-        return {"texto": texto, "mostrar_formulario": False, "motivo": None, "mostrar_cta": True, "motivo_cta": "Clude Saúde"}
+    # Produtos especiais (TotalPass, NR-01, Clude Saúde, etc.) — vem da aba
+    # "Produtos" da planilha do time de parcerias, editável sem deploy.
+    for produto in buscar_produtos_especiais():
+        gatilhos = [g.strip() for g in produto["gatilhos"].split(",") if g.strip()]
+        if any(g in m for g in gatilhos):
+            return {
+                "texto": produto["resposta"],
+                "mostrar_formulario": False,
+                "motivo": None,
+                "mostrar_cta": bool(produto.get("motivo_cta")),
+                "motivo_cta": produto.get("motivo_cta"),
+            }
 
     # Total de parceiros do Clube
     if re.search(r'quant[oa]s?\s+parceir', m):

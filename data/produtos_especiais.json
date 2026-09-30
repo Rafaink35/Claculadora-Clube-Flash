@@ -2,19 +2,61 @@
   {
     "nome": "TotalPass",
     "gatilhos": "totalpass, total pass",
-    "resposta": "Pra você, já dá pra contratar sozinho no Clube Flash o TP Lite ou o TP Lite Pro — o TP Lite, por exemplo, custa R$ 69,90 por mês e dá acesso a mais de 6.000 academias e apps de bem-estar, direto pelo app da TotalPass, só precisa ter o cartão Flash. Se a sua empresa quiser oferecer algo ainda mais completo pra todo mundo, tem o TotalPass corporativo, que inclui até 3 dependentes e uma rede de academias bem mais ampla — aí é contratado direto com o nosso time comercial.",
+    "resposta": "Pra você, já dá pra contratar sozinho no Clube Flash o TP Lite ou o TP Lite Pro — o TP Lite, por exemplo, custa R$ 69,90 por mês e dá acesso a mais de 6.000 academias e apps de bem-estar, direto pelo app da TotalPass, só precisa ter o cartão Flash. Se a sua empresa quiser oferecer algo ainda mais completo pra todo mundo, tem o TotalPass corporativo, com mais de 30 mil academias e estúdios em mais de 1.800 cidades, até 3 dependentes por colaborador, e os módulos Total Fit, Total Mind (psicólogos e meditação) e Total Nutri (plano alimentar e receitas). Clica no botão abaixo que a gente te conecta com o nosso time comercial, que apresenta tudo em detalhe pra você.",
     "motivo_cta": "TotalPass corporativo"
   },
   {
-    "nome": "NR-01 / Psicologia",
-    "gatilhos": "nr01, nr-01, nr 01, psicossocial, psicolog",
-    "resposta": "A Flash tem sim suporte pra saúde mental: é o Clude Mind, dentro do Clude Saúde — consulta por vídeo com psicólogo por um valor acessível, e chat com equipe de psicólogos de segunda a sexta, das 8h às 20h. Isso ajuda bastante a mitigar os riscos psicossociais que a NR-01 pede pra cuidar, mas é importante lembrar que a NR-01 exige uma avaliação formal de risco que é um processo à parte. Se a sua empresa precisar de algo mais robusto pra NR-01, temos o Clude Corporativo e uma parceria com a Conexa, que são soluções mais completas.",
+    "nome": "NR-01 / Clude Corporativo",
+    "gatilhos": "nr01, nr-01, nr 01, psicossocial, clude corporativo",
+    "resposta": "A Flash tem uma solução completa pra NR-01: a parceria com a Clude Saúde. Pro lado da empresa, inclui pesquisa de clima organizacional alinhada à NR-1, apoio na adequação normativa (como Código de Ética e Conduta), canal de denúncias confidencial, workshops e treinamentos sob demanda, e um dashboard completo pra tomada de decisão. Pro colaborador, tem teleorientação pra emergência emocional, monitoramento contínuo de ansiedade, estresse, depressão e burnout, chat com psicólogos, diário do sono e diário emocional, e um espaço de meditação. Isso ajuda bastante a estruturar a gestão de risco psicossocial, mas vale lembrar que a avaliação formal de risco exigida pela NR-01 é um processo à parte, com profissional qualificado — isso complementa, não substitui. Clica no botão abaixo que a gente te conecta com o nosso time comercial, que apresenta tudo em detalhe pra você.",
     "motivo_cta": "Clude Saúde / NR-01"
   },
   {
     "nome": "Clude Saúde",
     "gatilhos": "clude saude, clude saúde",
-    "resposta": "Sim, a Flash tem o Clude Saúde! É telemedicina 24h por dia, 7 dias por semana, consulta com especialista a partir de R$ 45, desconto de até 80% em exames e até 60% em mais de 26.000 farmácias, e ainda dá acesso a mais de 50 cirurgias com condições especiais. Não é seguro nem plano de saúde — é telemedicina e desconto em rede credenciada, contratado individualmente por quem tem cartão Flash.",
+    "resposta": "Sim, a Flash tem o Clude Saúde! É telemedicina 24h por dia, 7 dias por semana, consulta com especialista a partir de R$ 45, desconto de até 80% em exames e até 60% em mais de 26.000 farmácias, e ainda dá acesso a mais de 50 cirurgias com condições especiais. Não é seguro nem plano de saúde — é telemedicina e desconto em rede credenciada, contratado individualmente por quem tem cartão Flash. Clica no botão abaixo que a gente te conecta com o nosso time comercial, que apresenta tudo em detalhe pra você.",
     "motivo_cta": "Clude Saúde"
+  },
+  {
+    "nome": "4Life",
+    "gatilhos": "4life, c4life, apoio psicologico, apoio juridico, apoio financeiro, orientacao juridica, orientacao psicologica, orientacao financeira",
+    "resposta": "Sim, temos a parceria com a 4Life — é uma linha de apoio 24h com orientação em cinco frentes: psicológica (ansiedade, estresse, questões no trabalho ou relacionamento), jurídica (civil, imobiliário, família, consumidor, penal e previdenciário — não cobre trabalhista), financeira (planejamento e gestão de despesas, sem gestão de investimentos), social (dependência química, luto, aposentadoria) e até orientação sobre pets. É contratado pela empresa, direto com o nosso time comercial. Clica no botão abaixo que a gente te conecta com eles, que apresentam tudo em detalhe pra você.",
+    "motivo_cta": "4Life"
+  },
+  {
+    "nome": "Vixting",
+    "gatilhos": "vixting, saude ocupacional",
+    "resposta": "Sim, temos parceria com a Vixting (by Sankhya) pra saúde ocupacional, com 15% de desconto nas mensalidades. É contratado direto com o nosso time comercial. Clica no botão abaixo que a gente te conecta com eles, que apresentam tudo em detalhe pra você.",
+    "motivo_cta": "Vixting"
+  },
+  {
+    "nome": "Conexa",
+    "gatilhos": "conexa",
+    "resposta": "Sim, a Flash tem parceria com a Conexa — telemedicina com mais de 35 especialidades, incluindo terapia com psicólogo. É uma opção mais robusta de saúde pra empresa, contratada direto com o nosso time comercial. Clica no botão abaixo que a gente te conecta com eles, que apresentam tudo em detalhe pra você.",
+    "motivo_cta": "Conexa"
+  },
+  {
+    "nome": "NewValue",
+    "gatilhos": "newvalue, new value",
+    "resposta": "Sim, temos a NewValue — desconto de até 50% em serviços e produtos pros seus colaboradores. É contratado pela empresa, direto com o nosso time comercial. Clica no botão abaixo que a gente te conecta com eles, que apresentam tudo em detalhe pra você.",
+    "motivo_cta": "NewValue"
+  },
+  {
+    "nome": "Neria",
+    "gatilhos": "neria, conta de energia, desconto de energia, desconto na energia",
+    "resposta": "Sim, temos parceria com a Neria — até 40% de desconto na conta de energia dos colaboradores. É contratado pela empresa, direto com o nosso time comercial. Clica no botão abaixo que a gente te conecta com eles, que apresentam tudo em detalhe pra você.",
+    "motivo_cta": "Neria"
+  },
+  {
+    "nome": "VT Soluções",
+    "gatilhos": "vt solucoes, vt soluções, roteirizacao, roteirização, vale-transporte, vale transporte",
+    "resposta": "Sim, temos a VT Soluções — ajuda a empresa a economizar até 40% no vale-transporte via roteirização e aproveitamento de saldo entre colaboradores. É contratado pela empresa, direto com o nosso time comercial. Clica no botão abaixo que a gente te conecta com eles, que apresentam tudo em detalhe pra você.",
+    "motivo_cta": "VT Soluções"
+  },
+  {
+    "nome": "Guapeco",
+    "gatilhos": "guapeco, beneficio pet, benefício pet, pet corporativo",
+    "resposta": "Sim, temos a Guapeco — benefício corporativo pra pet, com custo zero de implementação e sem mensalidade, pra empresas com mais de 100 vidas. É contratado pela empresa, direto com o nosso time comercial. Clica no botão abaixo que a gente te conecta com eles, que apresentam tudo em detalhe pra você.",
+    "motivo_cta": "Guapeco"
   }
 ]

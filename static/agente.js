@@ -43,7 +43,9 @@ function renderFormularioContato(motivo){
   const wrapper = document.createElement('div');
   wrapper.className = 'msg assistant form-contato';
   wrapper.innerHTML = `
-    <div class="form-contato-titulo">Deixa seus dados que o comercial te procura sobre: <b>${escapeHtml(motivo)}</b></div>
+    <div class="form-contato-titulo">Deixa seus dados que o comercial te procura:</div>
+    <label class="form-contato-label">Produto de interesse</label>
+    <input type="text" class="fc-produto" value="${escapeHtml(motivo)}" placeholder="Produto de interesse">
     <input type="text" class="fc-nome" placeholder="Seu nome">
     <input type="email" class="fc-email" placeholder="Seu e-mail">
     <input type="text" class="fc-empresa" placeholder="Empresa (opcional)">
@@ -56,6 +58,7 @@ function renderFormularioContato(motivo){
   chatMessages.scrollTop = chatMessages.scrollHeight;
 
   wrapper.querySelector('.fc-enviar').addEventListener('click', async () => {
+    const produto = wrapper.querySelector('.fc-produto').value.trim() || motivo;
     const nome = wrapper.querySelector('.fc-nome').value.trim();
     const email = wrapper.querySelector('.fc-email').value.trim();
     const empresa = wrapper.querySelector('.fc-empresa').value.trim();
@@ -75,7 +78,7 @@ function renderFormularioContato(motivo){
       const res = await fetch('/api/lead-comercial', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ nome, email, empresa, telefone, colaboradores, motivo }),
+        body: JSON.stringify({ nome, email, empresa, telefone, colaboradores, motivo: produto }),
       });
       const data = await res.json();
       if (res.ok && data.ok){

@@ -1,5 +1,9 @@
 let historico = [];
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/static/sw.js').catch(() => {});
+}
+
 const chatMessages = document.getElementById('chatMessages');
 const chatForm = document.getElementById('chatForm');
 const chatInput = document.getElementById('chatInput');
@@ -174,4 +178,24 @@ suggestions.querySelectorAll('.suggestion-chip').forEach(chip => {
   chip.addEventListener('click', () => enviarMensagem(chip.dataset.msg));
 });
 
-renderMensagem('assistant', 'Oi! 🦩 Eu sou o Mingo, do Clube Flash. Tudo bem com você? Antes da gente continuar, qual é o seu nome?');
+// Se o app da Flash (WebView) passar ?nome=...&empresa=... na URL, a gente já
+// sabe quem é a pessoa e pula a pergunta do nome, personalizando a saudação.
+const paramsUrl = new URLSearchParams(window.location.search);
+const nomeUrl = (paramsUrl.get('nome') || '').trim();
+const empresaUrl = (paramsUrl.get('empresa') || '').trim();
+
+let saudacaoInicial;
+if (nomeUrl && empresaUrl) {
+  saudacaoInicial = `Oi, ${nomeUrl}! 🦩 Eu sou o Mingo, do Clube Flash. Bora ver como o clube pode ajudar você aí na ${empresaUrl}?`;
+} else if (nomeUrl) {
+  saudacaoInicial = `Oi, ${nomeUrl}! 🦩 Eu sou o Mingo, do Clube Flash. Bora ver como o clube pode te ajudar?`;
+} else {
+  saudacaoInicial = 'Oi! 🦩 Eu sou o Mingo, do Clube Flash. Tudo bem com você? Antes da gente continuar, qual é o seu nome?';
+}
+
+renderMensagem('assistant', saudacaoInicial);
+if (nomeUrl) {
+  // Entra no histórico como fala do próprio Mingo, pra ele "lembrar" o nome
+  // (e a empresa, se veio) nas respostas seguintes, sem soar forçado.
+  historico.push({ role: 'assistant', text: saudacaoInicial });
+}

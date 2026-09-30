@@ -2,8 +2,14 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Mingo — Clube Flash</title>
+<link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#FE2B8F">
+<link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mingo">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fustat:wght@400;600;700;800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -12,11 +18,12 @@
   .chat-shell{
     max-width:720px;
     margin:0 auto;
-    padding:28px 20px 40px;
-    height:100vh;
+    padding:calc(28px + env(safe-area-inset-top, 0px)) 20px calc(40px + env(safe-area-inset-bottom, 0px));
+    height:100%;
     display:flex;
     flex-direction:column;
   }
+  html, body{ height:100%; }
   .chat-messages{
     flex:1;
     overflow-y:auto;

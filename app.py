@@ -262,21 +262,39 @@ def _extrair_retry_after(texto: str) -> int:
 
 
 def post_gemini(payload: dict):
-    """Chama o Gemini tentando cada modelo da lista. Só levanta RateLimitError
-    se TODOS responderem 429; qualquer outro erro HTTP sobe como RuntimeError."""
-    ultimo_429 = ""
+    """Chama o Gemini tentando cada modelo da lista. Trata como "tenta o
+    próximo modelo" qualquer instabilidade transitória — cota cheia (429),
+    indisponibilidade do lado do Google (503/500/502/504), ou timeout de
+    rede/conexão. Só desiste de vez se TODOS os modelos falharem."""
+    ultimo_erro = ""
+    ultimo_foi_transitorio = False
+
     for modelo in GEMINI_MODELS:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{modelo}:generateContent"
-        resp = requests.post(url, params={"key": GEMINI_API_KEY}, json=payload, timeout=25)
+        try:
+            resp = requests.post(url, params={"key": GEMINI_API_KEY}, json=payload, timeout=25)
+        except requests.exceptions.RequestException as e:
+            ultimo_erro = f"{type(e).__name__}: {e}"
+            ultimo_foi_transitorio = True
+            print(f"[AVISO] Erro de rede no modelo {modelo} ({ultimo_erro}), tentando o próximo...", flush=True)
+            continue
+
         if resp.ok:
             return resp
-        if resp.status_code == 429:
-            ultimo_429 = resp.text
-            print(f"[AVISO] 429 no modelo {modelo}, tentando o próximo...", flush=True)
+
+        if resp.status_code == 429 or resp.status_code >= 500:
+            ultimo_erro = resp.text
+            ultimo_foi_transitorio = True
+            print(f"[AVISO] {resp.status_code} no modelo {modelo}, tentando o próximo...", flush=True)
             continue
+
+        # Erro que não é transitório (ex: 400 chave inválida, 404 modelo não
+        # existe) — não adianta tentar outro modelo, é erro de configuração.
         raise RuntimeError(f"Gemini ({modelo}) retornou {resp.status_code}: {resp.text[:500]}")
 
-    raise RateLimitError(_extrair_retry_after(ultimo_429), ultimo_429[:300])
+    if ultimo_foi_transitorio:
+        raise RateLimitError(_extrair_retry_after(ultimo_erro), ultimo_erro[:300])
+    raise RuntimeError(f"Todos os modelos falharam: {ultimo_erro[:300]}")
 
 
 def carregar_categorias():

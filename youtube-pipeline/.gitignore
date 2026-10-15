@@ -1,0 +1,15 @@
+# Segredos (regra 5)
+.env
+client_secret.json
+token.json
+
+# Mídia: brutos são só-leitura e pesados; resultados ficam fora do git
+input/*
+output/*
+!input/.gitkeep
+!output/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+.venv/

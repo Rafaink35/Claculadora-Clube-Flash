@@ -1,0 +1,44 @@
+# Configuração padrão do pipeline. Edite aqui, não no código.
+language: pt        # pt | en  (decisão definitiva do canal 1 ainda em aberto)
+use_tts: false      # padrão: voz do próprio criador
+
+schedule:           # cadência alvo (horário de Brasília)
+  timezone: America/Sao_Paulo
+  days: [tuesday, thursday]
+  time: "11:30"
+  videos_per_month: 8
+
+paths:
+  input: input
+  output: output
+  music: music
+  backlog: topics/backlog.csv
+
+audio:
+  target_lufs: -16
+  music_volume: 0.12     # 10-15% sob a voz
+  music_fade_seconds: 2
+  silence_threshold_db: -40
+  silence_min_seconds: 0.8
+
+captions:
+  model: small           # small | medium
+  # idioma segue "language" acima
+
+video:
+  width: 1920
+  height: 1080
+  fps: 30
+  vertical_short_seconds: 40
+
+thumbnail:
+  width: 1280
+  height: 720
+  max_words: 4
+  background: "#0B1F4B"   # azul-marinho
+  text_color: "#FFC22E"   # amarelo/laranja
+  variations: 2
+
+upload:
+  category_id: "27"       # Educação
+  privacy: private        # nunca público automático

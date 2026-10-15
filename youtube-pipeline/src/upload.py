@@ -13,10 +13,12 @@ SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
 
 
 def build_body(cfg, meta, publish_at, title_index=0):
-    desc = meta.get("descricao", "")
     chapters = meta.get("capitulos") or []
-    if chapters:
-        desc += "\n\nCapítulos:\n" + "\n".join(f"{c['tempo']} {c['titulo']}" for c in chapters)
+    caps = "Capítulos:\n" + "\n".join(f"{c['tempo']} {c['titulo']}" for c in chapters) if chapters else ""
+    desc = Path("templates/description.md").read_text(encoding="utf-8").format(
+        descricao=meta.get("descricao", ""), capitulos=caps)
+    if "[LINK DO CANAL]" in desc or "[INSERIR LINK]" in desc:
+        raise SystemExit("[upload] preencha os links em templates/description.md")
     title = meta["titulos"][title_index]
     tags = meta.get("tags", [])
     # limites da API do YouTube
